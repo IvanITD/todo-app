@@ -74,7 +74,7 @@ p {
 }
 #todo-input:hover {
     border-color: #b3a589;
-    background-color: solid #c7b99b;
+    background-color: #c7b99b;
     box-shadow: 0 0 0 2px rgba(199, 185, 155, 0.25);
     outline: none;
     line-height: 1.5;
@@ -138,7 +138,6 @@ p {
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     border-top: 2px solid #8d7f60;
-    border-radius: 8px;
 }
 
 #todo-list li span {
@@ -147,10 +146,6 @@ p {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     padding: 0.5rem 1rem;
     border-radius: 8px;
-    margin-bottom: 1.5rem;
-    margin-top: 1.5rem;
-    margin-left: auto;
-    margin-right: auto;
     max-width: 500px;
 }
 
@@ -224,7 +219,6 @@ p {
     padding: 0.75rem 1rem;
     background-color: #fff;
     border: 1px solid #c7b99b;
-    border-bottom: 2px solid #8d7f60;
     border-radius: 12px;
 
 }
@@ -239,17 +233,6 @@ p {
     cursor: pointer;
     user-select: none;
     transition: background-color 0.2s ease;
-
-    /* align-items: center;
-    gap: 0.5rem;
-    font-weight: 600;
-    font-size: 1rem;
-    letter-spacing: 0.02rem;
-    text-transform: uppercase;
-    color: #8d7f60;
-    cursor: pointer;
-    user-select: none;
-    transition: all 0.3s ease; */
 }
 
 #completed-todo-container-checkbox label:hover {
@@ -298,14 +281,17 @@ p {
     border-radius: 8px;
 }
 
+#completed-todo-list-container {display: none;}
+#completed-todo-container-checkbox:has(#completed-todo-checkbox:checked) ~ #completed-todo-list-container { 
+    display: block;
+}
+
 #completed-todo-list li span {
     flex: 1;
     word-break: break-all;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     padding: 0.5rem 1rem;
     border-radius: 8px;
-    margin-bottom: 1.5rem;
-    margin-top: 1.5rem;
     margin-left: auto;
     margin-right: auto;
     max-width: 500px;

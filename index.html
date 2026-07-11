@@ -4,8 +4,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Todo App</title>
-        <link rel="stylesheet" href="style.css">
-        <script src="script.js" defer></script>
+        <link rel="stylesheet" href="assets/css/style.css">
+        <script src="assets/js/script.js" defer></script>
     </head>
     <body>
         <main>
@@ -42,22 +42,24 @@
                 <input aria-label="Show completed todos" type="checkbox" id="completed-todo-checkbox">
                 <label for="completed-todo-checkbox">Show Completed Todos</label>
             </div>
-            
-            <div id="completed-todo-list">
-              <li id="completed-todo-item-1">
-                <input aria-label="Completed todo item" type="checkbox" checked  id="completed-todo-checkbox-1">
-                <span>Feed the dog</span>
-                <button type="button" id="button-delete-todo-1">X</button>
-              </li>
-              <li id="completed-todo-item-2">
-                <input aria-label="Completed todo item" type="checkbox" checked id="completed-todo-checkbox-2">
-                <span>Study for the exam</span>
-                <button type="button" id="button-delete-todo-2">X</button>
-              </li>
-              <li id="completed-todo-item-3">
-                <input aria-label="Completed todo item" type="checkbox" checked id="completed-todo-checkbox-3">
-                <span>Wash the dishes</span>
-                <button type="button" id="button-delete-todo-3">X</button>
+            <div id="completed-todo-list-container">
+              <ul id="completed-todo-list">
+                <li id="completed-todo-item-1">
+                  <input aria-label="Completed todo item" type="checkbox" checked  id="completed-todo-checkbox-1">
+                  <span>Feed the dog</span>
+                  <button type="button" id="completed-button-delete-todo-1">X</button>
+                </li>
+                <li id="completed-todo-item-2">
+                  <input aria-label="Completed todo item" type="checkbox" checked id="completed-todo-checkbox-2">
+                  <span>Study for the exam</span>
+                  <button type="button" id="completed-button-delete-todo-2">X</button>
+                </li>
+                <li id="completed-todo-item-3">
+                  <input aria-label="Completed todo item" type="checkbox" checked id="completed-todo-checkbox-3">
+                  <span>Wash the dishes</span>
+                  <button type="button" id="completed-button-delete-todo-3">X</button>
+                </li>
+              </ul>
             </div>
         </main>
     </body>
