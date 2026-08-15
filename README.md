@@ -1,6 +1,6 @@
 # Todo App
 
-A guided todo application built with HTML, CSS, and JavaScript. The project follows a phased approach — structure and styling first, then interactive behavior — making it a solid learning and portfolio piece.
+A guided todo application built with HTML, CSS, and JavaScript. The project follows a phased approach — structure and styling first, then interactive behavior and persistence — making it a solid learning and portfolio piece.
 
 **Author:** Ivan Ivanov  
 **License:** [MIT](LICENSE)
@@ -10,7 +10,7 @@ A guided todo application built with HTML, CSS, and JavaScript. The project foll
 ### Completed (Phase 1 & 2)
 
 - Active todo list with sample tasks
-- Add-todo form (HTML structure in place)
+- Add-todo form
 - Completed todos section with strikethrough styling
 - **Show Completed Todos** toggle — pure CSS show/hide using `:has()` and the sibling combinator
 - Custom circular checkboxes with checkmark styling
@@ -18,24 +18,36 @@ A guided todo application built with HTML, CSS, and JavaScript. The project foll
 - Accessible labels and `aria-label` attributes on form controls
 - Semantic HTML (`<ul>` / `<li>` for lists)
 
-### Planned (Phase 3)
+### Completed (Phase 3)
 
 - Add new todos via form submit
-- Delete todos
+- Delete todos from the active or completed list
 - Mark todos as complete and move them to the completed list
 - Uncheck completed todos to move them back to the active list
+
+### Completed (Phase 4)
+
+- Todos persist in the browser with `localStorage`
+- Lists are rebuilt from saved data on page load
+
+Starter sample tasks in `index.html` still appear when nothing is saved yet (first visit, private window, or cleared storage). After the first add, delete, or complete, the saved list takes over.
+
+### Completed (Phase 5)
+
+- Empty-state messages when the active or completed list has no items
+- Messages sit outside the `<ul>` so they are not saved as todos
 
 ## Tech Stack
 
 - HTML5
 - CSS3 (Flexbox, custom checkboxes, `:has()` selector)
-- Vanilla JavaScript (Phase 3 — not yet implemented)
+- Vanilla JavaScript (DOM events, `localStorage`)
 
 No build tools, frameworks, or dependencies required.
 
 ## Status
 
-Work in progress. This app will be hosted online later — deployment and access details will be added when ready.
+Phases 1–5 are complete. This app will be hosted online later — deployment and access details will be added when ready.
 
 ## Project Structure
 
@@ -49,7 +61,7 @@ todo-app/
     ├── css/
     │   └── style.css       # All styles
     └── js/
-        └── script.js       # App logic (Phase 3)
+        └── script.js       # App logic (add, delete, complete, persist)
 ```
 
 ## Development Phases
@@ -58,7 +70,9 @@ todo-app/
 |-------|--------|--------|
 | **Phase 1** | HTML structure, semantic markup, accessibility basics | Done |
 | **Phase 2** | CSS styling, layout, completed toggle, custom checkboxes | Done |
-| **Phase 3** | JavaScript — add, delete, complete, move todos | Planned |
+| **Phase 3** | JavaScript — add, delete, complete, move todos | Done |
+| **Phase 4** | Persist todos with `localStorage` | Done |
+| **Phase 5** | Empty-state messages for empty lists | Done |
 
 ## How the Completed Toggle Works
 
@@ -71,6 +85,10 @@ The **Show Completed Todos** control uses a hidden checkbox and a styled label a
 ```
 
 The toggle card and completed list are separate blocks under `<main>` — the list appears below the button, not inside the same card.
+
+## How Persistence Works
+
+After add, delete, or complete, the app reads both lists and saves them as JSON in `localStorage` under the key `todos`. Each item is stored as `{ text, isDone }`. On load, if saved data exists, both lists are cleared and rebuilt from that data.
 
 ## License
 

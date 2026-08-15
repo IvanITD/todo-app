@@ -17,7 +17,7 @@
                 <input aria-label="Add todo item" id="todo-input" type="text" placeholder="Add todo item">
                 <button id="todo-add" type="submit">Add</button>
             </form>
-    
+            <p id="todo-empty" class="empty-message" hidden>No todos yet. Add one above.</p>
             <ul id="todo-list">
                 <li id="todo-item-1">
                     <input aria-label="Complete todo item" type="checkbox" id="todo-checkbox-1">
@@ -43,6 +43,7 @@
                 <label for="completed-todo-checkbox">Show Completed Todos</label>
             </div>
             <div id="completed-todo-list-container">
+                <p id="completed-empty" class="empty-message" hidden>No completed todos.</p>
               <ul id="completed-todo-list">
                 <li id="completed-todo-item-1">
                   <input aria-label="Completed todo item" type="checkbox" checked  id="completed-todo-checkbox-1">

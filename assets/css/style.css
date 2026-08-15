@@ -353,3 +353,15 @@ p {
     outline: none;
     box-shadow: 0 0 0 2px rgba(199, 185, 155, 0.45);
 }
+
+.empty-message {
+    max-width: 500px;
+    margin: 1.5rem auto 0;
+    padding: 1rem;
+    text-align: center;
+    color: gray;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
