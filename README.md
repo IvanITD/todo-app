@@ -1,50 +1,43 @@
 # Todo App
 
-A guided todo application built with HTML, CSS, and JavaScript. The project follows a phased approach — structure and styling first, then interactive behavior and persistence — making it a solid learning and portfolio piece.
+A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or backend — todos are saved in the browser with `localStorage`.
 
+**Live demo:** [https://ivanitd.github.io/todo-app/](https://ivanitd.github.io/todo-app/)  
+**Version:** 1.0.0  
 **Author:** Ivan Ivanov  
 **License:** [MIT](LICENSE)
 
 ## Features
 
-### Completed (Phase 1 & 2)
+- Add todos from the form
+- Delete todos with the **X** button
+- Check an item to move it to the completed list
+- Uncheck a completed item to move it back
+- Double-click todo text to edit (Enter or click away to save, Escape to cancel)
+- Empty-state messages when a list has no items
+- Todos persist across page refreshes
+- **Show Completed Todos** toggle (pure CSS)
+- Custom circular checkboxes and a gold/tan card layout
+- Accessible labels on form controls
 
-- Active todo list with sample tasks
-- Add-todo form
-- Completed todos section with strikethrough styling
-- **Show Completed Todos** toggle — pure CSS show/hide using `:has()` and the sibling combinator
-- Custom circular checkboxes with checkmark styling
-- Card-style layout with a cohesive gold/tan theme (`#c7b99b`, `#8d7f60`)
-- Accessible labels and `aria-label` attributes on form controls
-- Semantic HTML (`<ul>` / `<li>` for lists)
+## How to use
 
-### Completed (Phase 3)
+1. Type a task and click **Add** (or press Enter).
+2. Check the circle to complete it. Turn on **Show Completed Todos** to see that list.
+3. Double-click the text to rename a task.
+4. Click **X** to delete it.
 
-- Add new todos via form submit
-- Delete todos from the active or completed list
-- Mark todos as complete and move them to the completed list
-- Uncheck completed todos to move them back to the active list
+Each visitor’s list is stored only in their own browser.
 
-### Completed (Phase 4)
+## How to run locally
 
-- Todos persist in the browser with `localStorage`
-- Lists are rebuilt from saved data on page load
-- Empty-state messages when the active or completed list has no items
-- Double-click a todo’s text to edit it (Enter or click away to save, Escape to cancel)
-
-Starter sample tasks in `index.html` still appear when nothing is saved yet (first visit, private window, or cleared storage). After the first add, delete, complete, or edit, the saved list takes over.
+Open `index.html` in a browser, or use Live Server in your editor. No install step.
 
 ## Tech Stack
 
 - HTML5
 - CSS3 (Flexbox, custom checkboxes, `:has()` selector)
 - Vanilla JavaScript (DOM events, `localStorage`)
-
-No build tools, frameworks, or dependencies required.
-
-## Status
-
-Phases 1–4 are complete. Phases 5 and 6 are reserved for later. This app will be hosted online later — deployment and access details will be added when ready.
 
 ## Project Structure
 
@@ -58,10 +51,12 @@ todo-app/
     ├── css/
     │   └── style.css       # All styles
     └── js/
-        └── script.js       # App logic (add, delete, complete, edit, persist)
+        └── script.js       # App logic
 ```
 
 ## Development Phases
+
+The app was built in phases — structure and styling first, then behavior, then persistence and a public release.
 
 | Phase | Focus | Status |
 |-------|--------|--------|
@@ -69,7 +64,7 @@ todo-app/
 | **Phase 2** | CSS styling, layout, completed toggle, custom checkboxes | Done |
 | **Phase 3** | JavaScript — add, delete, complete, move todos | Done |
 | **Phase 4** | Persist todos, empty states, and inline edit | Done |
-| **Phase 5** | TBD | Planned |
+| **Phase 5** | GitHub Pages deploy and README for v1.0.0 | Done |
 | **Phase 6** | TBD | Planned |
 
 ## How the Completed Toggle Works
@@ -86,7 +81,7 @@ The toggle card and completed list are separate blocks under `<main>` — the li
 
 ## How Persistence Works
 
-After add, delete, complete, or edit, the app reads both lists and saves them as JSON in `localStorage` under the key `todos`. Each item is stored as `{ text, isDone }`. On load, if saved data exists, both lists are cleared and rebuilt from that data.
+After add, delete, complete, or edit, the app reads both lists and saves them as JSON in `localStorage` under the key `todos`. Each item is stored as `{ text, isDone }`. On load, if saved data exists, both lists are cleared and rebuilt from that data. If nothing is saved, both lists start empty.
 
 ## License
 
