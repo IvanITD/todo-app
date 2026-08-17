@@ -365,3 +365,15 @@ p {
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
+
+#todo-list li span,
+#completed-todo-list li span {
+    cursor: text;
+}
+
+#todo-list li span:focus,
+#completed-todo-list li span:focus {
+    outline: none;
+    border: 1px solid #c7b99b;
+    box-shadow: 0 0 0 2px rgba(199, 185, 155, 0.25);
+}

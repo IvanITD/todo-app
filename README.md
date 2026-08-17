@@ -29,13 +29,10 @@ A guided todo application built with HTML, CSS, and JavaScript. The project foll
 
 - Todos persist in the browser with `localStorage`
 - Lists are rebuilt from saved data on page load
-
-Starter sample tasks in `index.html` still appear when nothing is saved yet (first visit, private window, or cleared storage). After the first add, delete, or complete, the saved list takes over.
-
-### Completed (Phase 5)
-
 - Empty-state messages when the active or completed list has no items
-- Messages sit outside the `<ul>` so they are not saved as todos
+- Double-click a todo’s text to edit it (Enter or click away to save, Escape to cancel)
+
+Starter sample tasks in `index.html` still appear when nothing is saved yet (first visit, private window, or cleared storage). After the first add, delete, complete, or edit, the saved list takes over.
 
 ## Tech Stack
 
@@ -47,7 +44,7 @@ No build tools, frameworks, or dependencies required.
 
 ## Status
 
-Phases 1–5 are complete. This app will be hosted online later — deployment and access details will be added when ready.
+Phases 1–4 are complete. Phases 5 and 6 are reserved for later. This app will be hosted online later — deployment and access details will be added when ready.
 
 ## Project Structure
 
@@ -61,7 +58,7 @@ todo-app/
     ├── css/
     │   └── style.css       # All styles
     └── js/
-        └── script.js       # App logic (add, delete, complete, persist)
+        └── script.js       # App logic (add, delete, complete, edit, persist)
 ```
 
 ## Development Phases
@@ -71,8 +68,9 @@ todo-app/
 | **Phase 1** | HTML structure, semantic markup, accessibility basics | Done |
 | **Phase 2** | CSS styling, layout, completed toggle, custom checkboxes | Done |
 | **Phase 3** | JavaScript — add, delete, complete, move todos | Done |
-| **Phase 4** | Persist todos with `localStorage` | Done |
-| **Phase 5** | Empty-state messages for empty lists | Done |
+| **Phase 4** | Persist todos, empty states, and inline edit | Done |
+| **Phase 5** | TBD | Planned |
+| **Phase 6** | TBD | Planned |
 
 ## How the Completed Toggle Works
 
@@ -88,7 +86,7 @@ The toggle card and completed list are separate blocks under `<main>` — the li
 
 ## How Persistence Works
 
-After add, delete, or complete, the app reads both lists and saves them as JSON in `localStorage` under the key `todos`. Each item is stored as `{ text, isDone }`. On load, if saved data exists, both lists are cleared and rebuilt from that data.
+After add, delete, complete, or edit, the app reads both lists and saves them as JSON in `localStorage` under the key `todos`. Each item is stored as `{ text, isDone }`. On load, if saved data exists, both lists are cleared and rebuilt from that data.
 
 ## License
 

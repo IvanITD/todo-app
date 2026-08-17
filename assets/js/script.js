@@ -50,6 +50,60 @@ function updateEmptyMessages() {
     completedEmpty.hidden = completedList.querySelectorAll("li").length > 0;
 }
 
+function startEdit(span) {
+    span.dataset.originalText = span.textContent;
+    span.contentEditable = "true";
+    span.focus();
+}
+
+function finishEdit(span) {
+    span.contentEditable = "false";
+
+    const text = span.textContent.trim();
+    if (text === "") {
+        span.textContent = span.dataset.originalText;
+    } else {
+        span.textContent = text;
+    }
+
+    saveTodos();
+}
+
+function handleListDblClick(event) {
+    const span = event.target.closest("span");
+    if (!span) {
+        return;
+    }
+
+    startEdit(span);
+}
+
+function handleListKeyDown(event) {
+    const span = event.target.closest("span");
+    if (!span || span.contentEditable !== "true") {
+        return;
+    }
+
+    if (event.key === "Enter") {
+        event.preventDefault();
+        span.blur();
+    }
+
+    if (event.key === "Escape") {
+        span.textContent = span.dataset.originalText;
+        span.blur();
+    }
+}
+
+function handleListBlur(event) {
+    const span = event.target.closest("span");
+    if (!span || span.contentEditable !== "true") {
+        return;
+    }
+
+    finishEdit(span);
+}
+
 function loadTodos() {
     const saved = localStorage.getItem("todos");
     if (saved) {
@@ -75,6 +129,14 @@ function loadTodos() {
 }
 
 // Button functionality
+
+todoList.addEventListener("dblclick", handleListDblClick);
+completedList.addEventListener("dblclick", handleListDblClick);
+todoList.addEventListener("keydown", handleListKeyDown);
+completedList.addEventListener("keydown", handleListKeyDown);
+todoList.addEventListener("focusout", handleListBlur);
+completedList.addEventListener("focusout", handleListBlur);
+
 todoForm.addEventListener("submit", function (event) {
     event.preventDefault();
 
