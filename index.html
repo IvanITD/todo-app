@@ -30,6 +30,24 @@
               <ul id="completed-todo-list">
               </ul>
             </div>
+            <div id="bin-container-checkbox">
+                <input aria-label="Show bin" type="checkbox" id="bin-checkbox">
+                <label for="bin-checkbox">Bin</label>
+            </div>
+            <div id="bin-list-container">
+                <div id="bin-actions">
+                    <button type="button" id="bin-restore-all">Restore All</button>
+                    <button type="button" id="bin-empty-all">Empty bin</button>
+                </div>
+                <div id="bin-confirm" hidden>
+                    <p>Permanently delete everything in the bin? This cannot be undone.</p>
+                    <button type="button" id="bin-confirm-cancel">Cancel</button>
+                    <button type="button" id="bin-confirm-empty">Empty bin</button>
+                </div>
+                <p id="bin-empty" class="empty-message" hidden>Bin is empty.</p>
+                <ul id="bin-list">
+                </ul>
+            </div>
         </main>
     </body>
 </html>

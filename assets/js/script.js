@@ -4,6 +4,13 @@ const todoList = document.getElementById("todo-list");
 const completedList = document.getElementById("completed-todo-list");
 const todoEmpty = document.getElementById("todo-empty");
 const completedEmpty = document.getElementById("completed-empty");
+const binList = document.getElementById("bin-list");
+const binEmpty = document.getElementById("bin-empty");
+const binRestoreAll = document.getElementById("bin-restore-all");
+const binEmptyAll = document.getElementById("bin-empty-all");
+const binConfirm = document.getElementById("bin-confirm");
+const binConfirmCancel = document.getElementById("bin-confirm-cancel");
+const binConfirmEmpty = document.getElementById("bin-confirm-empty");
 
 // Functions
 
@@ -25,6 +32,29 @@ function createTodoItem(text) {
     return li;
 }
 
+function createBinnedItem(text, isDone) {
+    const li = document.createElement("li");
+    li.dataset.isDone = isDone ? "true" : "false";
+
+    const span = document.createElement("span");
+    span.textContent = text;
+
+    const restoreButton = document.createElement("button");
+    restoreButton.type = "button";
+    restoreButton.className = "bin-restore";
+    restoreButton.dataset.action = "restore";
+    restoreButton.textContent = "Restore";
+
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.className = "bin-delete";
+    deleteButton.dataset.action = "delete-forever";
+    deleteButton.textContent = "X";
+
+    li.append(span, restoreButton, deleteButton);
+    return li;
+}
+
 function saveTodos() {
     const activeTodos = [...todoList.querySelectorAll("li")].map(function (li) {
         return {
@@ -42,12 +72,25 @@ function saveTodos() {
 
     const todos = activeTodos.concat(completedTodos);
     localStorage.setItem("todos", JSON.stringify(todos));
+
+    const binnedTodos = [...binList.querySelectorAll("li")].map(function (li) {
+        return {
+            text: li.querySelector("span").textContent,
+            isDone: li.dataset.isDone === "true"
+        };
+    });
+    localStorage.setItem("binnedTodos", JSON.stringify(binnedTodos));
     updateEmptyMessages();
 }
 
 function updateEmptyMessages() {
     todoEmpty.hidden = todoList.querySelectorAll("li").length > 0;
     completedEmpty.hidden = completedList.querySelectorAll("li").length > 0;
+    binEmpty.hidden = binList.querySelectorAll("li").length > 0;
+
+    if (binList.querySelectorAll("li").length === 0) {
+        binConfirm.hidden = true;
+    }
 }
 
 function startEdit(span) {
@@ -124,8 +167,39 @@ function loadTodos() {
             }
         });
     }
-
+    const savedBin = localStorage.getItem("binnedTodos");
+    binList.innerHTML = "";
+    if (savedBin) {
+        const binnedTodos = JSON.parse(savedBin);
+        binnedTodos.forEach(function (todo) {
+            binList.append(createBinnedItem(todo.text, todo.isDone));
+        });
+    }
     updateEmptyMessages();
+}
+
+function moveToBin(li) {
+    const text = li.querySelector("span").textContent;
+    const isDone = li.querySelector("input[type='checkbox']").checked;
+    li.remove();
+    binList.append(createBinnedItem(text, isDone));
+    saveTodos();
+}
+
+function restoreFromBin(li) {
+    const text = li.querySelector("span").textContent;
+    const isDone = li.dataset.isDone === "true";
+    const todoItem = createTodoItem(text);
+
+    if (isDone) {
+        todoItem.querySelector("input[type='checkbox']").checked = true;
+        completedList.append(todoItem);
+    } else {
+        todoList.append(todoItem);
+    }
+
+    li.remove();
+    saveTodos();
 }
 
 // Button functionality
@@ -153,28 +227,6 @@ todoForm.addEventListener("submit", function (event) {
     todoInput.focus();
 });
 
-todoList.addEventListener("click", function (event) {
-    const deleteButton = event.target.closest("button");
-    if (!deleteButton) {
-        return;
-    }
-
-    const li = deleteButton.closest("li");
-    li.remove();
-    saveTodos();
-});
-
-completedList.addEventListener("click", function (event) {
-    const deleteButton = event.target.closest("button");
-    if (!deleteButton) {
-        return;
-    }
-
-    const li = deleteButton.closest("li");
-    li.remove();
-    saveTodos();
-});
-
 todoList.addEventListener("change", function (event) {
     const checkbox = event.target.closest("input[type='checkbox']");
     if (!checkbox) {
@@ -196,6 +248,64 @@ completedList.addEventListener("change", function (event) {
     const li = checkbox.closest("li");
     checkbox.checked = false;
     todoList.append(li);
+    saveTodos();
+});
+
+todoList.addEventListener("click", function (event) {
+    const deleteButton = event.target.closest("button");
+    if (!deleteButton) {
+        return;
+    }
+
+    moveToBin(deleteButton.closest("li"));
+});
+
+completedList.addEventListener("click", function (event) {
+    const deleteButton = event.target.closest("button");
+    if (!deleteButton) {
+        return;
+    }
+
+    moveToBin(deleteButton.closest("li"));
+});
+
+binList.addEventListener("click", function (event) {
+    const button = event.target.closest("button");
+    if (!button) {
+        return;
+    }
+
+    const li = button.closest("li");
+
+    if (button.dataset.action === "restore") {
+        restoreFromBin(li);
+    }
+
+    if (button.dataset.action === "delete-forever") {
+        li.remove();
+        saveTodos();
+    }
+});
+
+binRestoreAll.addEventListener("click", function () {
+    [...binList.querySelectorAll("li")].forEach(restoreFromBin);
+});
+
+binEmptyAll.addEventListener("click", function () {
+    if (binList.querySelectorAll("li").length === 0) {
+        return;
+    }
+
+    binConfirm.hidden = false;
+});
+
+binConfirmCancel.addEventListener("click", function () {
+    binConfirm.hidden = true;
+});
+
+binConfirmEmpty.addEventListener("click", function () {
+    binList.innerHTML = "";
+    binConfirm.hidden = true;
     saveTodos();
 });
 
