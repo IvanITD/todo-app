@@ -3,7 +3,7 @@
 A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or backend — todos are saved in the browser with `localStorage`.
 
 **Live demo:** [https://ivanitd.github.io/todo-app/](https://ivanitd.github.io/todo-app/)  
-**Version:** 1.3.0  
+**Version:** 1.3.1  
 **Author:** Ivan Ivanov  
 **License:** [MIT](LICENSE)
 
@@ -19,9 +19,10 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 - **☰** opens a task editor overlay (name, notes, due date, priority, created date, completed)
 - Empty-state messages when a list has no items
 - Todos persist across page refreshes
-- Light / Dark theme toggle (saved in the browser)
+- Light / Dark theme toggle (saved in the browser; **Light** stays a visible chip on the dark header)
 - **Show Completed Todos** and **Bin** toggles (pure CSS)
-- Custom circular checkboxes and a gold/tan card layout
+- Hover styles on Add, Bin, Restore All, Empty bin, and the theme toggle in both themes
+- Custom circular checkboxes on the list and in the task editor, gold/tan card layout
 - Accessible labels on form controls
 
 ## How to use
@@ -92,6 +93,8 @@ The toggle card and completed list are separate blocks under `<main>` — the li
 There is **one** overlay for the whole page (`#task-editor`), not a copy inside each todo. Clicking **☰** fills that panel from the chosen row and removes the `hidden` attribute. Close (or the backdrop) writes the fields back onto that row, then saves.
 
 The overlay uses `hidden` to hide. CSS only applies `display: flex` when the attribute is off (`#task-editor:not([hidden])`), so `display` does not override `hidden`.
+
+The **Completed** checkbox in the overlay uses the same circular style as the list (`appearance: none`, `border-radius: 50%`). Dark-theme button hovers are extra rules (`[data-theme="dark"] …:hover`) so they are not overwritten by the dark resting colors.
 
 ## How Persistence Works
 

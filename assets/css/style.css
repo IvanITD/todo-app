@@ -165,7 +165,7 @@ p {
 }
 
 #todo-list li input[type="checkbox"]:hover {
-    border-color: #8d7f60;
+    border-color: #7a6d52;
 }
 
 #todo-list li input[type="checkbox"]:focus-visible {
@@ -236,7 +236,8 @@ p {
 }
 
 #completed-todo-container-checkbox label:hover {
-    color: #b3a589;
+    background-color: #b3a589;
+    color: #fff;
 }
 
 #completed-todo-container-checkbox input[type="checkbox"] {
@@ -346,7 +347,7 @@ p {
 }
 
 #completed-todo-list li input[type="checkbox"]:hover {
-    border-color: #8d7f60;
+    border-color: #7a6d52;
 }
 
 #completed-todo-list li input[type="checkbox"]:focus-visible {
@@ -401,6 +402,12 @@ p {
     border-radius: 0.25rem;
     cursor: pointer;
     user-select: none;
+    transition: background-color 0.2s ease;
+}
+
+#bin-container-checkbox label:hover {
+    background-color: #b3a589;
+    color: #fff;
 }
 
 #bin-checkbox {
@@ -436,10 +443,15 @@ p {
     font-weight: 700;
     color: #fff;
     background-color: #c7b99b;
+    transition: background-color 0.2s ease;
 }
 
 #bin-empty-all:hover {
     background-color: #8f4b4b;
+}
+
+#bin-restore-all:hover {
+    background-color: #b3a589;
 }
 
 #bin-list {
@@ -546,6 +558,11 @@ header {
     font-weight: 700;
     color: #fff;
     background-color: #8d7f60;
+    transition: background-color 0.2s ease;
+}
+
+#theme-toggle:hover {
+    background-color: #7a6d52;
 }
 
 [data-theme="dark"] {
@@ -600,9 +617,28 @@ header {
 [data-theme="dark"] #completed-todo-container-checkbox label,
 [data-theme="dark"] #bin-container-checkbox label,
 [data-theme="dark"] #bin-restore-all,
-[data-theme="dark"] #bin-empty-all,
-[data-theme="dark"] #theme-toggle {
+[data-theme="dark"] #bin-empty-all {
     background-color: #8d7f60;
+}
+
+[data-theme="dark"] #todo-add:hover,
+[data-theme="dark"] #completed-todo-container-checkbox label:hover,
+[data-theme="dark"] #bin-container-checkbox label:hover,
+[data-theme="dark"] #bin-restore-all:hover {
+    background-color: #7a6d52;
+}
+
+[data-theme="dark"] #bin-empty-all:hover {
+    background-color: #8f4b4b;
+}
+
+[data-theme="dark"] #theme-toggle {
+    background-color: #d7c79e;
+    color: #2b2b2b;
+}
+
+[data-theme="dark"] #theme-toggle:hover {
+    background-color: #c7b99b;
 }
 
 [data-theme="dark"] #bin-confirm p {
@@ -701,6 +737,31 @@ header {
 #task-editor-done {
     width: 1.1rem;
     height: 1.1rem;
+    border: 2px solid #8d7f60;
+    border-radius: 50%;
+    background-color: #fff;
+    cursor: pointer;
+    flex-shrink: 0;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+#task-editor-done:checked {
+    background-color: #8d7f60;
+    border-color: #8d7f60;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><path fill="%23fff" d="M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z"/></svg>');
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#task-editor-done:hover {
+    border-color: #7a6d52;
+}
+
+#task-editor-done:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(199, 185, 155, 0.45);
 }
 
 [data-theme="dark"] #task-editor-panel {
