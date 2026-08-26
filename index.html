@@ -50,5 +50,36 @@
                 </ul>
             </div>
         </main>
+        <div id="task-editor" hidden>
+            <div id="task-editor-backdrop"></div>
+            <div id="task-editor-panel" role="dialog" aria-labelledby="task-editor-heading">
+                <button type="button" id="task-editor-close" aria-label="Close task editor">Close</button>
+                <h2 id="task-editor-heading">Edit Task</h2>
+
+                <label for="task-editor-title">Task name</label>
+                <input id="task-editor-title" type="text">
+
+                <label for="task-editor-notes">Notes</label>
+                <textarea id="task-editor-notes" rows="5"></textarea>
+
+                <label for="task-editor-due">Due date</label>
+                <input id="task-editor-due" type="date">
+
+                <label for="task-editor-priority">Priority</label>
+                <select id="task-editor-priority">
+                    <option value="none">None</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+
+                <p id="task-editor-created-wrap">Created: <span id="task-editor-created"></span></p>
+                
+                <label for="task-editor-done">
+                    <input type="checkbox" id="task-editor-done">
+                    Completed
+                </label>
+            </div>
+        </div>
     </body>
 </html>

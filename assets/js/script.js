@@ -13,8 +13,42 @@ const binConfirmCancel = document.getElementById("bin-confirm-cancel");
 const binConfirmEmpty = document.getElementById("bin-confirm-empty");
 const themeToggle = document.getElementById("theme-toggle");
 const themeStorageKey = "todoTheme";
+const taskEditor = document.getElementById("task-editor");
+const taskEditorBackdrop = document.getElementById("task-editor-backdrop");
+const taskEditorClose = document.getElementById("task-editor-close");
+const taskEditorTitle = document.getElementById("task-editor-title");
+const taskEditorNotes = document.getElementById("task-editor-notes");
+const taskEditorDue = document.getElementById("task-editor-due");
+const taskEditorPriority = document.getElementById("task-editor-priority");
+const taskEditorCreated = document.getElementById("task-editor-created");
+const taskEditorDone = document.getElementById("task-editor-done");
+
+let editorItem = null;
 
 // Functions
+function todayDate() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
+
+function getTodoDetails(li) {
+    return {
+        notes: li.dataset.notes || "",
+        dueDate: li.dataset.dueDate || "",
+        priority: li.dataset.priority || "none",
+        createdAt: li.dataset.createdAt || ""
+    };
+}
+
+function applyTodoDetails(li, details) {
+    li.dataset.notes = details.notes || "";
+    li.dataset.dueDate = details.dueDate || "";
+    li.dataset.priority = details.priority || "none";
+    li.dataset.createdAt = details.createdAt || "";
+}
 
 function createTodoItem(text) {
     const li = document.createElement("li");
@@ -26,17 +60,26 @@ function createTodoItem(text) {
     const span = document.createElement("span");
     span.textContent = text;
 
+    const detailsButton = document.createElement("button");
+    detailsButton.type = "button";
+    detailsButton.className = "todo-details";
+    detailsButton.dataset.action = "open-editor";
+    detailsButton.setAttribute("aria-label", "Edit task details");
+    detailsButton.textContent = "☰";
+
     const deleteButton = document.createElement("button");
     deleteButton.type = "button";
+    deleteButton.dataset.action = "bin";
     deleteButton.textContent = "X";
 
-    li.append(checkbox, span, deleteButton);
+    li.append(checkbox, span, detailsButton, deleteButton);
     return li;
 }
 
-function createBinnedItem(text, isDone) {
+function createBinnedItem(text, isDone, details) {
     const li = document.createElement("li");
     li.dataset.isDone = isDone ? "true" : "false";
+    applyTodoDetails(li, details || {});
 
     const span = document.createElement("span");
     span.textContent = text;
@@ -61,14 +104,22 @@ function saveTodos() {
     const activeTodos = [...todoList.querySelectorAll("li")].map(function (li) {
         return {
             text: li.querySelector("span").textContent,
-            isDone: false
+            isDone: false,
+            notes: li.dataset.notes || "",
+            dueDate: li.dataset.dueDate || "",
+            priority: li.dataset.priority || "none",
+            createdAt: li.dataset.createdAt || ""
         };
     });
 
     const completedTodos = [...completedList.querySelectorAll("li")].map(function (li) {
         return {
             text: li.querySelector("span").textContent,
-            isDone: true
+            isDone: true,
+            notes: li.dataset.notes || "",
+            dueDate: li.dataset.dueDate || "",
+            priority: li.dataset.priority || "none",
+            createdAt: li.dataset.createdAt || ""
         };
     });
 
@@ -78,7 +129,11 @@ function saveTodos() {
     const binnedTodos = [...binList.querySelectorAll("li")].map(function (li) {
         return {
             text: li.querySelector("span").textContent,
-            isDone: li.dataset.isDone === "true"
+            isDone: li.dataset.isDone === "true",
+            notes: li.dataset.notes || "",
+            dueDate: li.dataset.dueDate || "",
+            priority: li.dataset.priority || "none",
+            createdAt: li.dataset.createdAt || ""
         };
     });
     localStorage.setItem("binnedTodos", JSON.stringify(binnedTodos));
@@ -159,6 +214,7 @@ function loadTodos() {
 
         todos.forEach(function (todo) {
             const li = createTodoItem(todo.text);
+            applyTodoDetails(li, todo);
             const checkbox = li.querySelector("input[type='checkbox']");
 
             if (todo.isDone) {
@@ -174,7 +230,7 @@ function loadTodos() {
     if (savedBin) {
         const binnedTodos = JSON.parse(savedBin);
         binnedTodos.forEach(function (todo) {
-            binList.append(createBinnedItem(todo.text, todo.isDone));
+            binList.append(createBinnedItem(todo.text, todo.isDone, todo));
         });
     }
     updateEmptyMessages();
@@ -183,8 +239,9 @@ function loadTodos() {
 function moveToBin(li) {
     const text = li.querySelector("span").textContent;
     const isDone = li.querySelector("input[type='checkbox']").checked;
+    const details = getTodoDetails(li);
     li.remove();
-    binList.append(createBinnedItem(text, isDone));
+    binList.append(createBinnedItem(text, isDone, details));
     saveTodos();
 }
 
@@ -192,6 +249,7 @@ function restoreFromBin(li) {
     const text = li.querySelector("span").textContent;
     const isDone = li.dataset.isDone === "true";
     const todoItem = createTodoItem(text);
+    applyTodoDetails(todoItem, getTodoDetails(li));
 
     if (isDone) {
         todoItem.querySelector("input[type='checkbox']").checked = true;
@@ -202,6 +260,48 @@ function restoreFromBin(li) {
 
     li.remove();
     saveTodos();
+}
+
+function openTaskEditor(li) {
+    editorItem = li;
+    taskEditorTitle.value = li.querySelector("span").textContent;
+    taskEditorNotes.value = li.dataset.notes || "";
+    taskEditorDue.value = li.dataset.dueDate || "";
+    taskEditorPriority.value = li.dataset.priority || "none";
+    taskEditorCreated.textContent = li.dataset.createdAt || "-";
+    taskEditorDone.checked = li.querySelector("input[type='checkbox']").checked;
+    taskEditor.hidden = false;
+}
+
+function closeTaskEditor() {
+    if (editorItem) {
+        const text = taskEditorTitle.value.trim();
+        if (text !== "") {
+            editorItem.querySelector("span").textContent = text;
+        }
+
+        applyTodoDetails(editorItem, {
+            notes: taskEditorNotes.value,
+            dueDate: taskEditorDue.value,
+            priority: taskEditorPriority.value,
+            createdAt: editorItem.dataset.createdAt || todayDate()
+        });
+
+        const checkbox = editorItem.querySelector("input[type='checkbox']");
+        const shouldBeDone = taskEditorDone.checked;
+
+        if (shouldBeDone && !checkbox.checked) {
+            checkbox.checked = true;
+            completedList.append(editorItem);
+        } else if (!shouldBeDone && checkbox.checked) {
+            checkbox.checked = false;
+            todoList.append(editorItem);
+        }
+
+        saveTodos();
+    }
+    editorItem = null;
+    taskEditor.hidden = true;
 }
 
 function setTheme(theme) {
@@ -232,6 +332,12 @@ todoForm.addEventListener("submit", function (event) {
     }
 
     const li = createTodoItem(text);
+    applyTodoDetails(li, {
+        notes: "",
+        dueDate: "",
+        priority: "none",
+        createdAt: todayDate()
+    });
     todoList.append(li);
     saveTodos();
 
@@ -264,21 +370,37 @@ completedList.addEventListener("change", function (event) {
 });
 
 todoList.addEventListener("click", function (event) {
-    const deleteButton = event.target.closest("button");
-    if (!deleteButton) {
+    const button = event.target.closest("button");
+    if (!button) {
         return;
     }
 
-    moveToBin(deleteButton.closest("li"));
+    const li = button.closest("li");
+
+    if (button.dataset.action === "open-editor") {
+        openTaskEditor(li);
+    }
+
+    if (button.dataset.action === "bin") {
+        moveToBin(li);
+    }
 });
 
 completedList.addEventListener("click", function (event) {
-    const deleteButton = event.target.closest("button");
-    if (!deleteButton) {
+    const button = event.target.closest("button");
+    if (!button) {
         return;
     }
 
-    moveToBin(deleteButton.closest("li"));
+    const li = button.closest("li");
+
+    if (button.dataset.action === "open-editor") {
+        openTaskEditor(li);
+    }
+
+    if (button.dataset.action === "bin") {
+        moveToBin(li);
+    }
 });
 
 binList.addEventListener("click", function (event) {
@@ -325,6 +447,9 @@ themeToggle.addEventListener("click", function () {
     const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
 });
+
+taskEditorClose.addEventListener("click", closeTaskEditor);
+taskEditorBackdrop.addEventListener("click", closeTaskEditor);
 
 const savedTheme = localStorage.getItem(themeStorageKey) === "dark" ? "dark" : "light";
 setTheme(savedTheme);
