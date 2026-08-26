@@ -11,6 +11,8 @@ const binEmptyAll = document.getElementById("bin-empty-all");
 const binConfirm = document.getElementById("bin-confirm");
 const binConfirmCancel = document.getElementById("bin-confirm-cancel");
 const binConfirmEmpty = document.getElementById("bin-confirm-empty");
+const themeToggle = document.getElementById("theme-toggle");
+const themeStorageKey = "todoTheme";
 
 // Functions
 
@@ -202,6 +204,16 @@ function restoreFromBin(li) {
     saveTodos();
 }
 
+function setTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem(themeStorageKey, theme);
+    themeToggle.textContent = theme === "dark" ? "Light" : "Dark";
+    themeToggle.setAttribute(
+        "aria-label",
+        theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
+    );
+}
+
 // Button functionality
 
 todoList.addEventListener("dblclick", handleListDblClick);
@@ -308,5 +320,13 @@ binConfirmEmpty.addEventListener("click", function () {
     binConfirm.hidden = true;
     saveTodos();
 });
+
+themeToggle.addEventListener("click", function () {
+    const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+});
+
+const savedTheme = localStorage.getItem(themeStorageKey) === "dark" ? "dark" : "light";
+setTheme(savedTheme);
 
 loadTodos();

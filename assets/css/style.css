@@ -530,3 +530,81 @@ p {
 #bin-confirm-empty {
     background-color: #8f4b4b;
 }
+
+header {
+    position: relative;
+}
+
+#theme-toggle {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    border: none;
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-weight: 700;
+    color: #fff;
+    background-color: #8d7f60;
+}
+
+[data-theme="dark"] {
+    color-scheme: dark;
+}
+
+[data-theme="dark"] body {
+    background-color: #202020;
+    color: #eeeeee;
+    border-color: #4a4a4a;
+}
+
+[data-theme="dark"] header {
+    background-color: #8d7f60;
+}
+
+[data-theme="dark"] h1 {
+    color: #d7c79e;
+    border-bottom-color: #d7c79e;
+}
+
+[data-theme="dark"] p,
+[data-theme="dark"] .empty-message {
+    color: #b8b8b8;
+}
+
+[data-theme="dark"] .empty-message,
+[data-theme="dark"] #todo-list li,
+[data-theme="dark"] #completed-todo-list li,
+[data-theme="dark"] #bin-list li,
+[data-theme="dark"] #completed-todo-container-checkbox,
+[data-theme="dark"] #bin-container-checkbox,
+[data-theme="dark"] #bin-confirm {
+    background-color: #2b2b2b;
+    border-color: #4a4a4a;
+}
+
+[data-theme="dark"] #todo-input,
+[data-theme="dark"] #todo-list li span,
+[data-theme="dark"] #completed-todo-list li span,
+[data-theme="dark"] #bin-list li span {
+    background-color: #1f1f1f;
+    color: #f2f2f2;
+    border-color: #4a4a4a;
+}
+
+[data-theme="dark"] #todo-input::placeholder {
+    color: #a9a9a9;
+}
+
+[data-theme="dark"] #todo-add,
+[data-theme="dark"] #completed-todo-container-checkbox label,
+[data-theme="dark"] #bin-container-checkbox label,
+[data-theme="dark"] #bin-restore-all,
+[data-theme="dark"] #bin-empty-all,
+[data-theme="dark"] #theme-toggle {
+    background-color: #8d7f60;
+}
+
+[data-theme="dark"] #bin-confirm p {
+    color: #d7c79e;
+}
