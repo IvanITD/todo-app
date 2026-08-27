@@ -3,7 +3,7 @@
 A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or backend — todos are saved in the browser with `localStorage`.
 
 **Live demo:** [https://ivanitd.github.io/todo-app/](https://ivanitd.github.io/todo-app/)  
-**Version:** 1.3.1  
+**Version:** 1.4.0  
 **Author:** Ivan Ivanov  
 **License:** [MIT](LICENSE)
 
@@ -17,6 +17,7 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 - Uncheck a completed item to move it back
 - Double-click todo text to edit (Enter or click away to save, Escape to cancel)
 - **☰** opens a task editor overlay (name, notes, due date, priority, created date, completed)
+- Search box filters active and completed todos by name (hidden, not deleted)
 - Empty-state messages when a list has no items
 - Todos persist across page refreshes
 - Light / Dark theme toggle (saved in the browser; **Light** stays a visible chip on the dark header)
@@ -28,11 +29,12 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 ## How to use
 
 1. Type a task and click **Add** (or press Enter).
-2. Check the circle to complete it. Turn on **Show Completed Todos** to see that list.
-3. Double-click the text to rename a task, or click **☰** for the full editor (notes, due date, priority, and more). Close or click the dim backdrop to save.
-4. Click **X** to move a task to the **Bin**.
-5. Open **Bin** to restore a task, restore all, delete one forever, or empty the bin.
-6. Click **Dark** / **Light** in the header to switch theme.
+2. Use **Search todos** to show only names that match. Clear the box to see the full list again.
+3. Check the circle to complete it. Turn on **Show Completed Todos** to see that list.
+4. Double-click the text to rename a task, or click **☰** for the full editor (notes, due date, priority, and more). Close or click the dim backdrop to save.
+5. Click **X** to move a task to the **Bin**.
+6. Open **Bin** to restore a task, restore all, delete one forever, or empty the bin.
+7. Click **Dark** / **Light** in the header to switch theme.
 
 Each visitor’s list is stored only in their own browser.
 
@@ -75,6 +77,7 @@ The app was built in phases — structure and styling first, then behavior, then
 | **Phase 6** | Bin — restore, restore all, empty, delete forever | Done |
 | **Phase 7** | Dark mode with saved theme | Done |
 | **Phase 8** | Task editor overlay — notes, due date, priority, created date | Done |
+| **Phase 9** | Search / filter by todo name | Done |
 
 ## How the Completed Toggle Works
 
@@ -95,6 +98,12 @@ There is **one** overlay for the whole page (`#task-editor`), not a copy inside 
 The overlay uses `hidden` to hide. CSS only applies `display: flex` when the attribute is off (`#task-editor:not([hidden])`), so `display` does not override `hidden`.
 
 The **Completed** checkbox in the overlay uses the same circular style as the list (`appearance: none`, `border-radius: 50%`). Dark-theme button hovers are extra rules (`[data-theme="dark"] …:hover`) so they are not overwritten by the dark resting colors.
+
+## How Search Works
+
+`#todo-search` is **outside** the add form so Enter does not create a todo. On each keystroke, `filterTodos` compares the query to each row’s name (case-insensitive) and sets `li.hidden` on non-matches. Clearing the box shows every row again. Search does not change `localStorage`.
+
+List rows use `display: flex`. That would override `hidden` the same way the overlay did, so flex is applied only with `#todo-list li:not([hidden])` (and the same for the completed list).
 
 ## How Persistence Works
 

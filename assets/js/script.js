@@ -1,5 +1,6 @@
 const todoForm = document.getElementById("todo-form");
 const todoInput = document.getElementById("todo-input");
+const todoSearch = document.getElementById("todo-search");
 const todoList = document.getElementById("todo-list");
 const completedList = document.getElementById("completed-todo-list");
 const todoEmpty = document.getElementById("todo-empty");
@@ -148,6 +149,19 @@ function updateEmptyMessages() {
     if (binList.querySelectorAll("li").length === 0) {
         binConfirm.hidden = true;
     }
+    filterTodos();
+}
+
+function filterTodos() {
+    const query = todoSearch.value.trim().toLowerCase();
+
+    function matchRow(li) {
+        const text = li.querySelector("span").textContent.toLowerCase();
+        li.hidden = query !== "" && !text.includes(query);
+    }
+
+    todoList.querySelectorAll("li").forEach(matchRow);
+    completedList.querySelectorAll("li").forEach(matchRow);
 }
 
 function startEdit(span) {
@@ -322,6 +336,8 @@ todoList.addEventListener("keydown", handleListKeyDown);
 completedList.addEventListener("keydown", handleListKeyDown);
 todoList.addEventListener("focusout", handleListBlur);
 completedList.addEventListener("focusout", handleListBlur);
+
+todoSearch.addEventListener("input", filterTodos);
 
 todoForm.addEventListener("submit", function (event) {
     event.preventDefault();
