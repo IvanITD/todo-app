@@ -459,8 +459,16 @@ p {
     margin-top: 1rem;
 }
 
+#completed-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
 #bin-restore-all,
-#bin-empty-all {
+#bin-empty-all,
+#completed-bin-all {
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
@@ -476,6 +484,10 @@ p {
 }
 
 #bin-restore-all:hover {
+    background-color: #b3a589;
+}
+
+#completed-bin-all:hover {
     background-color: #b3a589;
 }
 
@@ -644,14 +656,16 @@ header {
 [data-theme="dark"] #completed-todo-container-checkbox label,
 [data-theme="dark"] #bin-container-checkbox label,
 [data-theme="dark"] #bin-restore-all,
-[data-theme="dark"] #bin-empty-all {
+[data-theme="dark"] #bin-empty-all,
+[data-theme="dark"] #completed-bin-all {
     background-color: #8d7f60;
 }
 
 [data-theme="dark"] #todo-add:hover,
 [data-theme="dark"] #completed-todo-container-checkbox label:hover,
 [data-theme="dark"] #bin-container-checkbox label:hover,
-[data-theme="dark"] #bin-restore-all:hover {
+[data-theme="dark"] #bin-restore-all:hover,
+[data-theme="dark"] #completed-bin-all:hover {
     background-color: #7a6d52;
 }
 

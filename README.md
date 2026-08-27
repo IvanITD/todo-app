@@ -3,7 +3,7 @@
 A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or backend — todos are saved in the browser with `localStorage`.
 
 **Live demo:** [https://ivanitd.github.io/todo-app/](https://ivanitd.github.io/todo-app/)  
-**Version:** 1.4.0  
+**Version:** 1.5.0  
 **Author:** Ivan Ivanov  
 **License:** [MIT](LICENSE)
 
@@ -11,6 +11,7 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 
 - Add todos from the form
 - Move a todo to the **Bin** with the **X** button
+- **Move all to Bin** sends every completed todo to the Bin at once
 - Restore one binned task, restore all, or delete one forever
 - Empty the bin with an in-app confirm (Cancel or Empty bin)
 - Check an item to move it to the completed list
@@ -22,7 +23,7 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 - Todos persist across page refreshes
 - Light / Dark theme toggle (saved in the browser; **Light** stays a visible chip on the dark header)
 - **Show Completed Todos** and **Bin** toggles (pure CSS)
-- Hover styles on Add, Bin, Restore All, Empty bin, and the theme toggle in both themes
+- Hover styles on Add, Bin, Restore All, Empty bin, Move all to Bin, and the theme toggle in both themes
 - Custom circular checkboxes on the list and in the task editor, gold/tan card layout
 - Accessible labels on form controls
 
@@ -30,9 +31,9 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 
 1. Type a task and click **Add** (or press Enter).
 2. Use **Search todos** to show only names that match. Clear the box to see the full list again.
-3. Check the circle to complete it. Turn on **Show Completed Todos** to see that list.
+3. Check the circle to complete it. Turn on **Show Completed Todos** to see that list. **Move all to Bin** sends every completed item to the Bin.
 4. Double-click the text to rename a task, or click **☰** for the full editor (notes, due date, priority, and more). Close or click the dim backdrop to save.
-5. Click **X** to move a task to the **Bin**.
+5. Click **X** to move one task to the **Bin**.
 6. Open **Bin** to restore a task, restore all, delete one forever, or empty the bin.
 7. Click **Dark** / **Light** in the header to switch theme.
 
@@ -78,6 +79,7 @@ The app was built in phases — structure and styling first, then behavior, then
 | **Phase 7** | Dark mode with saved theme | Done |
 | **Phase 8** | Task editor overlay — notes, due date, priority, created date | Done |
 | **Phase 9** | Search / filter by todo name | Done |
+| **Phase 10** | Move all completed todos to the Bin | Done |
 
 ## How the Completed Toggle Works
 
@@ -90,6 +92,8 @@ The **Show Completed Todos** control uses a hidden checkbox and a styled label a
 ```
 
 The toggle card and completed list are separate blocks under `<main>` — the list appears below the button, not inside the same card.
+
+**Move all to Bin** (`#completed-bin-all`) lives inside `#completed-todo-list-container`, not inside the `<ul>`, so it is not saved as a todo. A click runs `moveToBin` on every completed row (same helper as **X**).
 
 ## How the Task Editor Works
 

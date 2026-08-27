@@ -3,6 +3,7 @@ const todoInput = document.getElementById("todo-input");
 const todoSearch = document.getElementById("todo-search");
 const todoList = document.getElementById("todo-list");
 const completedList = document.getElementById("completed-todo-list");
+const completedBinAll = document.getElementById("completed-bin-all");
 const todoEmpty = document.getElementById("todo-empty");
 const completedEmpty = document.getElementById("completed-empty");
 const binList = document.getElementById("bin-list");
@@ -439,6 +440,10 @@ binList.addEventListener("click", function (event) {
 
 binRestoreAll.addEventListener("click", function () {
     [...binList.querySelectorAll("li")].forEach(restoreFromBin);
+});
+
+completedBinAll.addEventListener("click", function () {
+    [...completedList.querySelectorAll("li")].forEach(moveToBin);
 });
 
 binEmptyAll.addEventListener("click", function () {
