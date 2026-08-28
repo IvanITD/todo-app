@@ -1,6 +1,9 @@
 const todoForm = document.getElementById("todo-form");
 const todoInput = document.getElementById("todo-input");
 const todoSearch = document.getElementById("todo-search");
+const todoSearchIn = document.getElementById("todo-search-in");
+const completedTodoCheckbox = document.getElementById("completed-todo-checkbox");
+const binCheckbox = document.getElementById("bin-checkbox");
 const todoSort = document.getElementById("todo-sort");
 const todoList = document.getElementById("todo-list");
 const completedList = document.getElementById("completed-todo-list");
@@ -157,14 +160,57 @@ function updateEmptyMessages() {
 
 function filterTodos() {
     const query = todoSearch.value.trim().toLowerCase();
+    const scope = todoSearchIn.value;
 
     function matchRow(li) {
         const text = li.querySelector("span").textContent.toLowerCase();
         li.hidden = query !== "" && !text.includes(query);
     }
 
-    todoList.querySelectorAll("li").forEach(matchRow);
-    completedList.querySelectorAll("li").forEach(matchRow);
+    function showAllRows(list) {
+        list.querySelectorAll("li").forEach(function (li) {
+            li.hidden = false;
+        });
+    }
+
+    if (scope === "all" || scope === "active") {
+        todoList.querySelectorAll("li").forEach(matchRow);
+    } else {
+        showAllRows(todoList);
+    }
+
+    if (scope === "all" || scope === "completed") {
+        completedList.querySelectorAll("li").forEach(matchRow);
+    } else {
+        showAllRows(completedList);
+    }
+
+    if (scope === "all" || scope === "bin") {
+        binList.querySelectorAll("li").forEach(matchRow);
+    } else {
+        showAllRows(binList);
+    }
+
+    if (scope === "completed") {
+        completedTodoCheckbox.checked = true;
+    }
+
+    if (scope === "bin") {
+        binCheckbox.checked = true;
+    }
+
+    if (scope === "all" && query !== "") {
+        completedList.querySelectorAll("li").forEach(function (li) {
+            if (!li.hidden) {
+                completedTodoCheckbox.checked = true;
+            }
+        });
+        binList.querySelectorAll("li").forEach(function (li) {
+            if (!li.hidden) {
+                binCheckbox.checked = true;
+            }
+        });
+    }
 }
 
 function priorityRank(priority) {
@@ -396,6 +442,7 @@ todoList.addEventListener("focusout", handleListBlur);
 completedList.addEventListener("focusout", handleListBlur);
 
 todoSearch.addEventListener("input", filterTodos);
+todoSearchIn.addEventListener("change", filterTodos);
 todoSort.addEventListener("change", sortTodos);
 
 todoForm.addEventListener("submit", function (event) {

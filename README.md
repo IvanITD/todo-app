@@ -3,7 +3,7 @@
 A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or backend — todos are saved in the browser with `localStorage`.
 
 **Live demo:** [https://ivanitd.github.io/todo-app/](https://ivanitd.github.io/todo-app/)  
-**Version:** 1.6.0  
+**Version:** 1.7.0  
 **Author:** Ivan Ivanov  
 **License:** [MIT](LICENSE)
 
@@ -18,7 +18,8 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 - Uncheck a completed item to move it back
 - Double-click todo text to edit (Enter or click away to save, Escape to cancel)
 - **☰** opens a task editor overlay (name, notes, due date, priority, created date, completed)
-- Search box filters active and completed todos by name (hidden, not deleted)
+- Search box filters todos by name (hidden, not deleted)
+- **Search in** limits search to All lists, Active, Completed, or Bin — and opens Completed or Bin when you search there
 - Sort dropdown reorders active and completed lists by date added, due date, or priority
 - Empty-state messages when a list has no items
 - Todos persist across page refreshes
@@ -31,7 +32,7 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 ## How to use
 
 1. Type a task and click **Add** (or press Enter).
-2. Use **Search todos** to show only names that match. Clear the box to see the full list again.
+2. Use **Search todos** to show only names that match. Use **Search in** for **All lists**, **Active**, **Completed**, or **Bin**. Searching Completed or Bin (or All, when those lists have a match) opens that section. Clear the box to see the full list again.
 3. Use the sort menu for **Date added**, **Due date**, or **Priority** (set due date and priority in **☰**).
 4. Check the circle to complete it. Turn on **Show Completed Todos** to see that list. **Move all to Bin** sends every completed item to the Bin.
 5. Double-click the text to rename a task, or click **☰** for the full editor (notes, due date, priority, and more). Close or click the dim backdrop to save.
@@ -83,6 +84,7 @@ The app was built in phases — structure and styling first, then behavior, then
 | **Phase 9** | Search / filter by todo name | Done |
 | **Phase 10** | Move all completed todos to the Bin | Done |
 | **Phase 11** | Sort by date added, due date, or priority | Done |
+| **Phase 12** | Search scope — All / Active / Completed / Bin | Done |
 
 ## How the Completed Toggle Works
 
@@ -108,13 +110,19 @@ The **Completed** checkbox in the overlay uses the same circular style as the li
 
 ## How Search Works
 
-`#todo-search` is **outside** the add form so Enter does not create a todo. On each keystroke, `filterTodos` compares the query to each row’s name (case-insensitive) and sets `li.hidden` on non-matches. Clearing the box shows every row again. Search does not change `localStorage`.
+`#todo-search` is **outside** the add form so Enter does not create a todo. `#todo-search-in` sits under it, also outside the form. Option values: `all`, `active`, `completed`, `bin` (must match JS).
 
-List rows use `display: flex`. That would override `hidden` the same way the overlay did, so flex is applied only with `#todo-list li:not([hidden])` (and the same for the completed list).
+On each keystroke, `filterTodos` compares the query to each row’s name (case-insensitive) and sets `li.hidden` on non-matches. Changing **Search in** runs the same function (`change`, not `input`). Clearing the box shows every row again. Search does not change `localStorage`.
+
+- **All lists** — search active, completed, and Bin. If the query matches a completed or binned name, that section opens.
+- **Active** — search the main list only
+- **Completed** / **Bin** — search that list only, and check the section toggle so it is visible
+
+List rows use `display: flex`. That would override `hidden` the same way the overlay did, so flex is applied only with `#todo-list li:not([hidden])` (and the same for the completed list and `#bin-list li:not([hidden])`).
 
 ## How Sort Works
 
-`#todo-sort` sits under Search, outside the add form. It reorders the **active** and **completed** lists only (not the Bin). There is no extra `localStorage` key — it reads `createdAt`, `dueDate`, and `priority` already stored on each row.
+`#todo-sort` sits under **Search in**, outside the add form. It reorders the **active** and **completed** lists only (not the Bin). There is no extra `localStorage` key — it reads `createdAt`, `dueDate`, and `priority` already stored on each row.
 
 - **Date added** — oldest `createdAt` first  
 - **Due date** — earliest due first; todos with no date go last  
