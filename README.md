@@ -3,7 +3,7 @@
 A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or backend — todos are saved in the browser with `localStorage`.
 
 **Live demo:** [https://ivanitd.github.io/todo-app/](https://ivanitd.github.io/todo-app/)  
-**Version:** 1.7.0  
+**Version:** 1.7.1  
 **Author:** Ivan Ivanov  
 **License:** [MIT](LICENSE)
 
@@ -18,6 +18,7 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 - Uncheck a completed item to move it back
 - Double-click todo text to edit (Enter or click away to save, Escape to cancel)
 - **☰** opens a task editor overlay (name, notes, due date, priority, created date, completed)
+- Search, **Search in**, and Sort sit in one toolbar card (`#todo-tools`)
 - Search box filters todos by name (hidden, not deleted)
 - **Search in** limits search to All lists, Active, Completed, or Bin — and opens Completed or Bin when you search there
 - Sort dropdown reorders active and completed lists by date added, due date, or priority
@@ -85,6 +86,7 @@ The app was built in phases — structure and styling first, then behavior, then
 | **Phase 10** | Move all completed todos to the Bin | Done |
 | **Phase 11** | Sort by date added, due date, or priority | Done |
 | **Phase 12** | Search scope — All / Active / Completed / Bin | Done |
+| **v1.7.1** | Search toolbar card — Search, Search in, and Sort grouped | Done |
 
 ## How the Completed Toggle Works
 
@@ -110,7 +112,7 @@ The **Completed** checkbox in the overlay uses the same circular style as the li
 
 ## How Search Works
 
-`#todo-search` is **outside** the add form so Enter does not create a todo. `#todo-search-in` sits under it, also outside the form. Option values: `all`, `active`, `completed`, `bin` (must match JS).
+`#todo-search` is **outside** the add form so Enter does not create a todo. Search, **Search in**, and Sort live in one `#todo-tools` card. `#todo-search-in` sits under the search box, also outside the form. Option values: `all`, `active`, `completed`, `bin` (must match JS).
 
 On each keystroke, `filterTodos` compares the query to each row’s name (case-insensitive) and sets `li.hidden` on non-matches. Changing **Search in** runs the same function (`change`, not `input`). Clearing the box shows every row again. Search does not change `localStorage`.
 
@@ -122,7 +124,7 @@ List rows use `display: flex`. That would override `hidden` the same way the ove
 
 ## How Sort Works
 
-`#todo-sort` sits under **Search in**, outside the add form. It reorders the **active** and **completed** lists only (not the Bin). There is no extra `localStorage` key — it reads `createdAt`, `dueDate`, and `priority` already stored on each row.
+`#todo-sort` sits in `#todo-tools-row` next to **Search in**, outside the add form. It reorders the **active** and **completed** lists only (not the Bin). There is no extra `localStorage` key — it reads `createdAt`, `dueDate`, and `priority` already stored on each row.
 
 - **Date added** — oldest `createdAt` first  
 - **Due date** — earliest due first; todos with no date go last  
