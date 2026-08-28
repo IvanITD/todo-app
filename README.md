@@ -48,6 +48,62 @@ Each visitor’s list is stored only in their own browser.
 
 Open `index.html` in a browser, or use Live Server in your editor. No install step.
 
+## Version gallery
+
+Screenshots of the real HTML and CSS at each **main** release live in a closed section below. Bugfix tags (v1.3.1, v1.7.1, v1.7.2) are skipped. Same sample todos in every shot.
+
+<details>
+<summary><strong>Show version screenshots</strong></summary>
+
+<br>
+
+<table>
+<tr>
+<td align="center" valign="top" width="33%">
+<strong>v1.0.0</strong><br>First public<br>
+<img src="assets/screenshots/v1.0.0.png" width="200" alt="v1.0.0 First public">
+</td>
+<td align="center" valign="top" width="33%">
+<strong>v1.1.0</strong><br>Bin<br>
+<img src="assets/screenshots/v1.1.0.png" width="200" alt="v1.1.0 Bin">
+</td>
+<td align="center" valign="top" width="33%">
+<strong>v1.2.0</strong><br>Dark mode<br>
+<img src="assets/screenshots/v1.2.0.png" width="200" alt="v1.2.0 Dark mode">
+</td>
+</tr>
+<tr>
+<td align="center" valign="top">
+<strong>v1.3.0</strong><br>Task editor<br>
+<img src="assets/screenshots/v1.3.0.png" width="200" alt="v1.3.0 Task editor">
+</td>
+<td align="center" valign="top">
+<strong>v1.4.0</strong><br>Search<br>
+<img src="assets/screenshots/v1.4.0.png" width="200" alt="v1.4.0 Search">
+</td>
+<td align="center" valign="top">
+<strong>v1.5.0</strong><br>Move all to Bin<br>
+<img src="assets/screenshots/v1.5.0.png" width="200" alt="v1.5.0 Move all to Bin">
+</td>
+</tr>
+<tr>
+<td align="center" valign="top">
+<strong>v1.6.0</strong><br>Sort<br>
+<img src="assets/screenshots/v1.6.0.png" width="200" alt="v1.6.0 Sort">
+</td>
+<td align="center" valign="top">
+<strong>v1.7.0</strong><br>Search scope<br>
+<img src="assets/screenshots/v1.7.0.png" width="200" alt="v1.7.0 Search scope">
+</td>
+<td align="center" valign="top">
+<strong>v1.8.0</strong><br>Due hints<br>
+<img src="assets/screenshots/v1.8.0.png" width="200" alt="v1.8.0 Due hints">
+</td>
+</tr>
+</table>
+
+</details>
+
 ## Tech Stack
 
 - HTML5
@@ -65,8 +121,9 @@ todo-app/
 └── assets/
     ├── css/
     │   └── style.css       # All styles
-    └── js/
-        └── script.js       # App logic
+    ├── js/
+    │   └── script.js       # App logic
+    └── screenshots/        # Main-version gallery (README)
 ```
 
 ## Development Phases
