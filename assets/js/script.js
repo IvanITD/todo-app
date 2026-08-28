@@ -1,6 +1,7 @@
 const todoForm = document.getElementById("todo-form");
 const todoInput = document.getElementById("todo-input");
 const todoSearch = document.getElementById("todo-search");
+const todoSort = document.getElementById("todo-sort");
 const todoList = document.getElementById("todo-list");
 const completedList = document.getElementById("completed-todo-list");
 const completedBinAll = document.getElementById("completed-bin-all");
@@ -150,6 +151,7 @@ function updateEmptyMessages() {
     if (binList.querySelectorAll("li").length === 0) {
         binConfirm.hidden = true;
     }
+    sortTodos();
     filterTodos();
 }
 
@@ -163,6 +165,61 @@ function filterTodos() {
 
     todoList.querySelectorAll("li").forEach(matchRow);
     completedList.querySelectorAll("li").forEach(matchRow);
+}
+
+function priorityRank(priority) {
+    if (priority === "high") {
+        return 0;
+    }
+    if (priority === "medium") {
+        return 1;
+    }
+    if (priority === "low") {
+        return 2;
+    }
+    return 3;
+}
+
+function sortTodoList(list) {
+    const mode = todoSort.value;
+    const items = [...list.querySelectorAll("li")];
+
+    items.sort(function (a, b) {
+        if (mode === "due") {
+            const dueA = a.dataset.dueDate || "9999-12-31";
+            const dueB = b.dataset.dueDate || "9999-12-31";
+            if (dueA < dueB) {
+                return -1;
+            }
+            if (dueA > dueB) {
+                return 1;
+            }
+            return 0;
+        }
+
+        if (mode === "priority") {
+            return priorityRank(a.dataset.priority) - priorityRank(b.dataset.priority);
+        }
+
+        const createdA = a.dataset.createdAt || "9999-12-31";
+        const createdB = b.dataset.createdAt || "9999-12-31";
+        if (createdA < createdB) {
+            return -1;
+        }
+        if (createdA > createdB) {
+            return 1;
+        }
+        return 0;
+    });
+
+    items.forEach(function (li) {
+        list.append(li);
+    });
+}
+
+function sortTodos() {
+    sortTodoList(todoList);
+    sortTodoList(completedList);
 }
 
 function startEdit(span) {
@@ -339,6 +396,7 @@ todoList.addEventListener("focusout", handleListBlur);
 completedList.addEventListener("focusout", handleListBlur);
 
 todoSearch.addEventListener("input", filterTodos);
+todoSort.addEventListener("change", sortTodos);
 
 todoForm.addEventListener("submit", function (event) {
     event.preventDefault();

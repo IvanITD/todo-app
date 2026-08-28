@@ -19,6 +19,11 @@
                 <button id="todo-add" type="submit">Add</button>
             </form>
             <input aria-label="Search todos" id="todo-search" type="search" placeholder="Search todos">
+            <select aria-label="Sort todos" id="todo-sort">
+                <option value="created">Date added</option>
+                <option value="due">Due date</option>
+                <option value="priority">Priority</option>
+            </select>
             <p id="todo-empty" class="empty-message" hidden>No todos yet. Add one above.</p>
             <ul id="todo-list">
             </ul>

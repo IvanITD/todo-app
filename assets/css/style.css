@@ -99,6 +99,25 @@ p {
     box-shadow: 0 0 0 2px rgba(199, 185, 155, 0.25);
 }
 
+#todo-sort {
+    display: block;
+    width: 100%;
+    max-width: 500px;
+    margin: 0.5rem auto 0;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    font-size: 16px;
+    line-height: 1.5;
+    background-color: #fff;
+}
+
+#todo-sort:focus {
+    outline: none;
+    border-color: #c7b99b;
+    box-shadow: 0 0 0 2px rgba(199, 185, 155, 0.25);
+}
+
 #todo-add {
     background-color: #c7b99b;
     color: #fff;
@@ -639,6 +658,7 @@ header {
 
 [data-theme="dark"] #todo-input,
 [data-theme="dark"] #todo-search,
+[data-theme="dark"] #todo-sort,
 [data-theme="dark"] #todo-list li span,
 [data-theme="dark"] #completed-todo-list li span,
 [data-theme="dark"] #bin-list li span {

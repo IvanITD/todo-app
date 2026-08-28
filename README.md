@@ -3,7 +3,7 @@
 A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or backend — todos are saved in the browser with `localStorage`.
 
 **Live demo:** [https://ivanitd.github.io/todo-app/](https://ivanitd.github.io/todo-app/)  
-**Version:** 1.5.0  
+**Version:** 1.6.0  
 **Author:** Ivan Ivanov  
 **License:** [MIT](LICENSE)
 
@@ -19,6 +19,7 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 - Double-click todo text to edit (Enter or click away to save, Escape to cancel)
 - **☰** opens a task editor overlay (name, notes, due date, priority, created date, completed)
 - Search box filters active and completed todos by name (hidden, not deleted)
+- Sort dropdown reorders active and completed lists by date added, due date, or priority
 - Empty-state messages when a list has no items
 - Todos persist across page refreshes
 - Light / Dark theme toggle (saved in the browser; **Light** stays a visible chip on the dark header)
@@ -31,11 +32,12 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 
 1. Type a task and click **Add** (or press Enter).
 2. Use **Search todos** to show only names that match. Clear the box to see the full list again.
-3. Check the circle to complete it. Turn on **Show Completed Todos** to see that list. **Move all to Bin** sends every completed item to the Bin.
-4. Double-click the text to rename a task, or click **☰** for the full editor (notes, due date, priority, and more). Close or click the dim backdrop to save.
-5. Click **X** to move one task to the **Bin**.
-6. Open **Bin** to restore a task, restore all, delete one forever, or empty the bin.
-7. Click **Dark** / **Light** in the header to switch theme.
+3. Use the sort menu for **Date added**, **Due date**, or **Priority** (set due date and priority in **☰**).
+4. Check the circle to complete it. Turn on **Show Completed Todos** to see that list. **Move all to Bin** sends every completed item to the Bin.
+5. Double-click the text to rename a task, or click **☰** for the full editor (notes, due date, priority, and more). Close or click the dim backdrop to save.
+6. Click **X** to move one task to the **Bin**.
+7. Open **Bin** to restore a task, restore all, delete one forever, or empty the bin.
+8. Click **Dark** / **Light** in the header to switch theme.
 
 Each visitor’s list is stored only in their own browser.
 
@@ -80,6 +82,7 @@ The app was built in phases — structure and styling first, then behavior, then
 | **Phase 8** | Task editor overlay — notes, due date, priority, created date | Done |
 | **Phase 9** | Search / filter by todo name | Done |
 | **Phase 10** | Move all completed todos to the Bin | Done |
+| **Phase 11** | Sort by date added, due date, or priority | Done |
 
 ## How the Completed Toggle Works
 
@@ -108,6 +111,16 @@ The **Completed** checkbox in the overlay uses the same circular style as the li
 `#todo-search` is **outside** the add form so Enter does not create a todo. On each keystroke, `filterTodos` compares the query to each row’s name (case-insensitive) and sets `li.hidden` on non-matches. Clearing the box shows every row again. Search does not change `localStorage`.
 
 List rows use `display: flex`. That would override `hidden` the same way the overlay did, so flex is applied only with `#todo-list li:not([hidden])` (and the same for the completed list).
+
+## How Sort Works
+
+`#todo-sort` sits under Search, outside the add form. It reorders the **active** and **completed** lists only (not the Bin). There is no extra `localStorage` key — it reads `createdAt`, `dueDate`, and `priority` already stored on each row.
+
+- **Date added** — oldest `createdAt` first  
+- **Due date** — earliest due first; todos with no date go last  
+- **Priority** — High, then Medium, then Low, then None  
+
+`sortTodos` runs on dropdown `change` and inside `updateEmptyMessages` (before `filterTodos`), so add, restore, and editor saves keep the current sort. `list.append(li)` moves existing rows; it does not copy them.
 
 ## How Persistence Works
 
