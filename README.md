@@ -3,7 +3,7 @@
 A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or backend — todos are saved in the browser with `localStorage`.
 
 **Live demo:** [https://ivanitd.github.io/todo-app/](https://ivanitd.github.io/todo-app/)  
-**Version:** 1.8.0  
+**Version:** 1.8.1  
 **Author:** Ivan Ivanov  
 **License:** [MIT](LICENSE)
 
@@ -25,7 +25,7 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 - Sort dropdown reorders active and completed lists by date added, due date, or priority
 - Empty-state messages when a list has no items
 - Todos persist across page refreshes
-- Light / Dark theme toggle (saved in the browser; **Light** stays a visible chip on the dark header)
+- Light / Dark theme switch in the header (sun and moon on a sliding pill; saved in the browser)
 - **Show Completed Todos** and **Bin** toggles (pure CSS)
 - Hover styles on Add, Bin, Restore All, Empty bin, Move all to Bin, and the theme toggle in both themes
 - Custom circular checkboxes on the list and in the task editor, gold/tan card layout
@@ -40,7 +40,7 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 5. Double-click the text to rename a task, or click **☰** for the full editor (notes, due date, priority, and more). Close or click the dim backdrop to save. **Overdue**, **Today**, or **Tomorrow** appears on the row when the due date needs attention.
 6. Click **X** to move one task to the **Bin**.
 7. Open **Bin** to restore a task, restore all, delete one forever, or empty the bin.
-8. Click **Dark** / **Light** in the header to switch theme.
+8. Click the sun / moon switch in the header to change theme.
 
 Each visitor’s list is stored only in their own browser.
 
@@ -50,7 +50,7 @@ Open `index.html` in a browser, or use Live Server in your editor. No install st
 
 ## Version gallery
 
-Screenshots of the real HTML and CSS at each **main** release live in a closed section below. Bugfix tags (v1.3.1, v1.7.1, v1.7.2) are skipped. Same sample todos in every shot.
+Screenshots of the real HTML and CSS at each **main** release live in a closed section below. Bugfix tags (v1.3.1, v1.7.1, v1.7.2, v1.8.1) are skipped. Same sample todos in every shot.
 
 <details>
 <summary><strong>Show version screenshots</strong></summary>
@@ -147,6 +147,7 @@ The app was built in phases — structure and styling first, then behavior, then
 | **v1.7.1** | Search toolbar card — Search, Search in, and Sort grouped | Done |
 | **v1.7.2** | Add text box hover — gold border only, no bronze fill | Done |
 | **Phase 13** | Due-soon hint on the row — Overdue / Today / Tomorrow | Done |
+| **v1.8.1** | Theme switch — sun / moon pill instead of the Dark / Light chip | Done |
 
 ## How the Completed Toggle Works
 
@@ -202,6 +203,10 @@ Each active/completed row has a `.todo-due-hint` span (created in `createTodoIte
 - No date, or a later date — the hint stays `hidden`
 
 `#todo-list li span` would style the hint like the name box, so `.todo-due-hint` comes after that rule and wins.
+
+## How the Theme Switch Works
+
+`#theme-toggle` is still one `<button>` in the header (same `id`, same click, same `todoTheme` key). Inside it: a sun, a sliding knob, and a moon. CSS draws the icons and slides the knob when `<html>` has `data-theme="dark"`. Do not set `themeToggle.textContent` — that would wipe the inner spans. Dark track is charcoal `#2b2b2b`, not cream, so the pill does not vanish into the olive header. Do not put `#theme-toggle` on the brown `#8d7f60` button group.
 
 ## How Persistence Works
 
