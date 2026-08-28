@@ -74,7 +74,6 @@ p {
 }
 #todo-input:hover {
     border-color: #b3a589;
-    background-color: #c7b99b;
     box-shadow: 0 0 0 2px rgba(199, 185, 155, 0.25);
     outline: none;
     line-height: 1.5;

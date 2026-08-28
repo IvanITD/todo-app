@@ -3,7 +3,7 @@
 A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or backend — todos are saved in the browser with `localStorage`.
 
 **Live demo:** [https://ivanitd.github.io/todo-app/](https://ivanitd.github.io/todo-app/)  
-**Version:** 1.7.1  
+**Version:** 1.7.2  
 **Author:** Ivan Ivanov  
 **License:** [MIT](LICENSE)
 
@@ -87,6 +87,7 @@ The app was built in phases — structure and styling first, then behavior, then
 | **Phase 11** | Sort by date added, due date, or priority | Done |
 | **Phase 12** | Search scope — All / Active / Completed / Bin | Done |
 | **v1.7.1** | Search toolbar card — Search, Search in, and Sort grouped | Done |
+| **v1.7.2** | Add text box hover — gold border only, no bronze fill | Done |
 
 ## How the Completed Toggle Works
 
