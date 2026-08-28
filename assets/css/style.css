@@ -81,11 +81,52 @@ p {
     transition: all 0.3s ease;
 }
 
+#todo-tools {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0.75rem 1rem;
+    background-color: #fff;
+    border: 1px solid #c7b99b;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+#todo-tools-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem 0.75rem;
+    margin-top: 0.5rem;
+}
+
+#todo-tools-row label[for="todo-search-in"] {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+#todo-tools-row #todo-search-in {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+#todo-tools-row label[for="todo-sort"] {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+#todo-tools-row #todo-sort {
+    grid-column: 2;
+    grid-row: 2;
+}
+
+#todo-tools-row label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #8d7f60;
+}
+
 #todo-search {
     display: block;
     width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
     padding: 0.5rem 1rem;
     border: 1px solid #ccc;
     border-radius: 0.25rem;
@@ -103,8 +144,6 @@ p {
 #todo-search-in {
     display: block;
     width: 100%;
-    max-width: 500px;
-    margin: 0.5rem auto 0;
     padding: 0.5rem 1rem;
     border: 1px solid #ccc;
     border-radius: 0.25rem;
@@ -656,9 +695,14 @@ header {
 [data-theme="dark"] #bin-list li,
 [data-theme="dark"] #completed-todo-container-checkbox,
 [data-theme="dark"] #bin-container-checkbox,
-[data-theme="dark"] #bin-confirm {
+[data-theme="dark"] #bin-confirm,
+[data-theme="dark"] #todo-tools {
     background-color: #2b2b2b;
     border-color: #4a4a4a;
+}
+
+[data-theme="dark"] #todo-tools-row label {
+    color: #d7c79e;
 }
 
 [data-theme="dark"] #todo-input,
