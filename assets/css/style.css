@@ -675,18 +675,98 @@ header {
     position: absolute;
     top: 0.75rem;
     right: 0.75rem;
+    width: 3.5rem;
+    height: 1.7rem;
+    padding: 0;
     border: none;
-    padding: 0.35rem 0.75rem;
-    border-radius: 0.25rem;
+    border-radius: 999px;
     cursor: pointer;
-    font-weight: 700;
-    color: #fff;
     background-color: #8d7f60;
     transition: background-color 0.2s ease;
 }
 
 #theme-toggle:hover {
     background-color: #7a6d52;
+}
+
+#theme-toggle:focus-visible {
+    outline: 2px solid #d7c79e;
+    outline-offset: 2px;
+}
+
+.theme-toggle-sun,
+.theme-toggle-moon,
+.theme-toggle-knob {
+    position: absolute;
+    pointer-events: none;
+}
+
+.theme-toggle-sun {
+    left: 0.41rem;
+    top: 50%;
+    width: 0.88rem;
+    height: 0.88rem;
+    margin-top: -0.44rem;
+    color: #8d7f60;
+    background-color: transparent;
+    background-image: radial-gradient(circle at center, currentColor 0.14rem, transparent 0.15rem);
+    z-index: 2;
+}
+
+.theme-toggle-sun::before,
+.theme-toggle-sun::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        linear-gradient(currentColor, currentColor) center top / 0.11rem 0.15rem no-repeat,
+        linear-gradient(currentColor, currentColor) center bottom / 0.11rem 0.15rem no-repeat,
+        linear-gradient(currentColor, currentColor) left center / 0.15rem 0.11rem no-repeat,
+        linear-gradient(currentColor, currentColor) right center / 0.15rem 0.11rem no-repeat;
+}
+
+.theme-toggle-sun::after {
+    transform: rotate(45deg);
+}
+
+.theme-toggle-moon {
+    right: 0.48rem;
+    top: 50%;
+    width: 0.74rem;
+    height: 0.74rem;
+    margin-top: -0.37rem;
+    border-radius: 50%;
+    color: #d7c79e;
+    background-color: transparent;
+    box-shadow: inset 0.20rem -0.12rem 0 0 currentColor;
+    z-index: 2;
+}
+
+.theme-toggle-knob {
+    top: 50%;
+    left: 0.15rem;
+    width: 1.4rem;
+    height: 1.4rem;
+    border-radius: 50%;
+    background-color: #d7c79e;
+    transform: translateY(-50%);
+    transition: transform 0.2s ease;
+    z-index: 1;
+}
+
+[data-theme="dark"] #theme-toggle .theme-toggle-knob {
+    transform: translate(1.8rem, -50%);
+}
+
+[data-theme="dark"] #theme-toggle .theme-toggle-sun {
+    color: #d7c79e;
+}
+
+[data-theme="dark"] #theme-toggle .theme-toggle-moon {
+    color: #8d7f60;
 }
 
 [data-theme="dark"] {
@@ -768,12 +848,11 @@ header {
 }
 
 [data-theme="dark"] #theme-toggle {
-    background-color: #d7c79e;
-    color: #2b2b2b;
+    background-color: #2b2b2b;
 }
 
 [data-theme="dark"] #theme-toggle:hover {
-    background-color: #c7b99b;
+    background-color: #3a3a3a;
 }
 
 [data-theme="dark"] #bin-confirm p {

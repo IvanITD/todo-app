@@ -481,7 +481,6 @@ function closeTaskEditor() {
 function setTheme(theme) {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem(themeStorageKey, theme);
-    themeToggle.textContent = theme === "dark" ? "Light" : "Dark";
     themeToggle.setAttribute(
         "aria-label",
         theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
