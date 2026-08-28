@@ -3,7 +3,7 @@
 A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or backend — todos are saved in the browser with `localStorage`.
 
 **Live demo:** [https://ivanitd.github.io/todo-app/](https://ivanitd.github.io/todo-app/)  
-**Version:** 1.7.2  
+**Version:** 1.8.0  
 **Author:** Ivan Ivanov  
 **License:** [MIT](LICENSE)
 
@@ -18,6 +18,7 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 - Uncheck a completed item to move it back
 - Double-click todo text to edit (Enter or click away to save, Escape to cancel)
 - **☰** opens a task editor overlay (name, notes, due date, priority, created date, completed)
+- Due-soon chips on the row: **Overdue**, **Today**, **Tomorrow** (set the date in ☰; later dates stay quiet)
 - Search, **Search in**, and Sort sit in one toolbar card (`#todo-tools`)
 - Search box filters todos by name (hidden, not deleted)
 - **Search in** limits search to All lists, Active, Completed, or Bin — and opens Completed or Bin when you search there
@@ -36,7 +37,7 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 2. Use **Search todos** to show only names that match. Use **Search in** for **All lists**, **Active**, **Completed**, or **Bin**. Searching Completed or Bin (or All, when those lists have a match) opens that section. Clear the box to see the full list again.
 3. Use the sort menu for **Date added**, **Due date**, or **Priority** (set due date and priority in **☰**).
 4. Check the circle to complete it. Turn on **Show Completed Todos** to see that list. **Move all to Bin** sends every completed item to the Bin.
-5. Double-click the text to rename a task, or click **☰** for the full editor (notes, due date, priority, and more). Close or click the dim backdrop to save.
+5. Double-click the text to rename a task, or click **☰** for the full editor (notes, due date, priority, and more). Close or click the dim backdrop to save. **Overdue**, **Today**, or **Tomorrow** appears on the row when the due date needs attention.
 6. Click **X** to move one task to the **Bin**.
 7. Open **Bin** to restore a task, restore all, delete one forever, or empty the bin.
 8. Click **Dark** / **Light** in the header to switch theme.
@@ -88,6 +89,7 @@ The app was built in phases — structure and styling first, then behavior, then
 | **Phase 12** | Search scope — All / Active / Completed / Bin | Done |
 | **v1.7.1** | Search toolbar card — Search, Search in, and Sort grouped | Done |
 | **v1.7.2** | Add text box hover — gold border only, no bronze fill | Done |
+| **Phase 13** | Due-soon hint on the row — Overdue / Today / Tomorrow | Done |
 
 ## How the Completed Toggle Works
 
@@ -132,6 +134,17 @@ List rows use `display: flex`. That would override `hidden` the same way the ove
 - **Priority** — High, then Medium, then Low, then None  
 
 `sortTodos` runs on dropdown `change` and inside `updateEmptyMessages` (before `filterTodos`), so add, restore, and editor saves keep the current sort. `list.append(li)` moves existing rows; it does not copy them.
+
+## How Due Hints Work
+
+Each active/completed row has a `.todo-due-hint` span (created in `createTodoItem`, not in `index.html`). Bin rows do not. `applyTodoDetails` calls `setDueHint`, which compares `dueDate` to `todayDate()` and `tomorrowDate()`. No extra `localStorage` key — it reads the due date already saved on the row.
+
+- **Overdue** — date is before today (`#8f4b4b`)
+- **Today** — date is today (`#8d7f60`)
+- **Tomorrow** — date is tomorrow (`#b2a486`, a lighter Today gold — not button tan `#c7b99b`)
+- No date, or a later date — the hint stays `hidden`
+
+`#todo-list li span` would style the hint like the name box, so `.todo-due-hint` comes after that rule and wins.
 
 ## How Persistence Works
 

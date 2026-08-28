@@ -385,7 +385,32 @@ p {
     opacity: 0.5;
 }
 
+#todo-list .todo-due-hint,
+#completed-todo-list .todo-due-hint {
+    flex: 0 0 auto;
+    max-width: none;
+    padding: 0.15rem 0.45rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: none;
+    word-break: normal;
+    cursor: default;
+    white-space: nowrap;
+    text-decoration: none;
+    opacity: 1;
+    color: #fff;
+    background-color: #8d7f60;
+}
 
+#todo-list .todo-due-hint.overdue,
+#completed-todo-list .todo-due-hint.overdue {
+    background-color: #8f4b4b;
+}
+
+#todo-list .todo-due-hint.tomorrow,
+#completed-todo-list .todo-due-hint.tomorrow {
+    background-color: #b2a486;
+}
 
 #completed-todo-list li button {
     border: none;

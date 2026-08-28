@@ -40,6 +40,15 @@ function todayDate() {
     return `${year}-${month}-${day}`;
 }
 
+function tomorrowDate() {
+    const now = new Date();
+    now.setDate(now.getDate() + 1);
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
+
 function getTodoDetails(li) {
     return {
         notes: li.dataset.notes || "",
@@ -54,6 +63,7 @@ function applyTodoDetails(li, details) {
     li.dataset.dueDate = details.dueDate || "";
     li.dataset.priority = details.priority || "none";
     li.dataset.createdAt = details.createdAt || "";
+    setDueHint(li);
 }
 
 function createTodoItem(text) {
@@ -65,6 +75,10 @@ function createTodoItem(text) {
     
     const span = document.createElement("span");
     span.textContent = text;
+
+    const dueHint = document.createElement("span");
+    dueHint.className = "todo-due-hint";
+    dueHint.hidden = true;
 
     const detailsButton = document.createElement("button");
     detailsButton.type = "button";
@@ -78,8 +92,50 @@ function createTodoItem(text) {
     deleteButton.dataset.action = "bin";
     deleteButton.textContent = "X";
 
-    li.append(checkbox, span, detailsButton, deleteButton);
+    li.append(checkbox, span, dueHint, detailsButton, deleteButton);
     return li;
+}
+
+function setDueHint(li) {
+    const dueHint = li.querySelector(".todo-due-hint");
+    if (!dueHint) {
+        return;
+    }
+
+    const dueDate = li.dataset.dueDate || "";
+    const today = todayDate();
+
+    dueHint.classList.remove("overdue");
+    dueHint.classList.remove("tomorrow");
+
+    if (dueDate === "") {
+        dueHint.textContent = "";
+        dueHint.hidden = true;
+        return;
+    }
+
+    if (dueDate === today) {
+        dueHint.textContent = "Today";
+        dueHint.hidden = false;
+        return;
+    }
+
+    if (dueDate < today) {
+        dueHint.textContent = "Overdue";
+        dueHint.classList.add("overdue");
+        dueHint.hidden = false;
+        return;
+    }
+
+    if (dueDate === tomorrowDate()) {
+        dueHint.textContent = "Tomorrow";
+        dueHint.classList.add("tomorrow");
+        dueHint.hidden = false;
+        return;
+    }
+
+    dueHint.textContent = "";
+    dueHint.hidden = true;
 }
 
 function createBinnedItem(text, isDone, details) {
