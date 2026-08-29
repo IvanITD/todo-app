@@ -92,7 +92,7 @@ p {
 
 #todo-tools-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 0.25rem 0.75rem;
     margin-top: 0.5rem;
 }
@@ -114,6 +114,16 @@ p {
 
 #todo-tools-row #todo-sort {
     grid-column: 2;
+    grid-row: 2;
+}
+
+#todo-tools-row label[for="todo-tag-filter"] {
+    grid-column: 3;
+    grid-row: 1;
+}
+
+#todo-tools-row #todo-tag-filter {
+    grid-column: 3;
     grid-row: 2;
 }
 
@@ -140,7 +150,8 @@ p {
 }
 
 #todo-sort,
-#todo-search-in {
+#todo-search-in,
+#todo-tag-filter {
     display: block;
     width: 100%;
     padding: 0.5rem 1rem;
@@ -152,7 +163,8 @@ p {
 }
 
 #todo-sort:focus,
-#todo-search-in:focus {
+#todo-search-in:focus,
+#todo-tag-filter:focus {
     outline: none;
     border-color: #c7b99b;
     box-shadow: 0 0 0 2px rgba(199, 185, 155, 0.25);
@@ -386,7 +398,9 @@ p {
 }
 
 #todo-list .todo-due-hint,
-#completed-todo-list .todo-due-hint {
+#completed-todo-list .todo-due-hint,
+#todo-list .todo-tag,
+#completed-todo-list .todo-tag {
     flex: 0 0 auto;
     max-width: none;
     padding: 0.15rem 0.45rem;
@@ -410,6 +424,21 @@ p {
 #todo-list .todo-due-hint.tomorrow,
 #completed-todo-list .todo-due-hint.tomorrow {
     background-color: #b2a486;
+}
+
+#todo-list .todo-tag.work,
+#completed-todo-list .todo-tag.work {
+    background-color: #8d7f60;
+}
+
+#todo-list .todo-tag.home,
+#completed-todo-list .todo-tag.home {
+    background-color: #b2a486;
+}
+
+#todo-list .todo-tag.personal,
+#completed-todo-list .todo-tag.personal {
+    background-color: #7a6d52;
 }
 
 #completed-todo-list li button {
@@ -811,12 +840,34 @@ header {
 [data-theme="dark"] #todo-search,
 [data-theme="dark"] #todo-sort,
 [data-theme="dark"] #todo-search-in,
+[data-theme="dark"] #todo-tag-filter,
 [data-theme="dark"] #todo-list li span,
 [data-theme="dark"] #completed-todo-list li span,
 [data-theme="dark"] #bin-list li span {
     background-color: #1f1f1f;
     color: #f2f2f2;
     border-color: #4a4a4a;
+}
+
+[data-theme="dark"] #todo-list .todo-tag,
+[data-theme="dark"] #completed-todo-list .todo-tag {
+    color: #fff;
+    box-shadow: none;
+}
+
+[data-theme="dark"] #todo-list .todo-tag.work,
+[data-theme="dark"] #completed-todo-list .todo-tag.work {
+    background-color: #8d7f60;
+}
+
+[data-theme="dark"] #todo-list .todo-tag.home,
+[data-theme="dark"] #completed-todo-list .todo-tag.home {
+    background-color: #b2a486;
+}
+
+[data-theme="dark"] #todo-list .todo-tag.personal,
+[data-theme="dark"] #completed-todo-list .todo-tag.personal {
+    background-color: #7a6d52;
 }
 
 [data-theme="dark"] #todo-input::placeholder,
@@ -925,7 +976,8 @@ header {
 #task-editor-title,
 #task-editor-notes,
 #task-editor-due,
-#task-editor-priority {
+#task-editor-priority,
+#task-editor-tag {
     width: 100%;
     padding: 0.5rem 1rem;
     border: 1px solid #ccc;
@@ -990,7 +1042,8 @@ header {
 [data-theme="dark"] #task-editor-title,
 [data-theme="dark"] #task-editor-notes,
 [data-theme="dark"] #task-editor-due,
-[data-theme="dark"] #task-editor-priority {
+[data-theme="dark"] #task-editor-priority,
+[data-theme="dark"] #task-editor-tag {
     background-color: #1f1f1f;
     color: #f2f2f2;
     border-color: #4a4a4a;

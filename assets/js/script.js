@@ -5,6 +5,7 @@ const todoSearchIn = document.getElementById("todo-search-in");
 const completedTodoCheckbox = document.getElementById("completed-todo-checkbox");
 const binCheckbox = document.getElementById("bin-checkbox");
 const todoSort = document.getElementById("todo-sort");
+const todoTagFilter = document.getElementById("todo-tag-filter");
 const todoList = document.getElementById("todo-list");
 const completedList = document.getElementById("completed-todo-list");
 const completedBinAll = document.getElementById("completed-bin-all");
@@ -26,6 +27,7 @@ const taskEditorTitle = document.getElementById("task-editor-title");
 const taskEditorNotes = document.getElementById("task-editor-notes");
 const taskEditorDue = document.getElementById("task-editor-due");
 const taskEditorPriority = document.getElementById("task-editor-priority");
+const taskEditorTag = document.getElementById("task-editor-tag");
 const taskEditorCreated = document.getElementById("task-editor-created");
 const taskEditorDone = document.getElementById("task-editor-done");
 
@@ -54,6 +56,7 @@ function getTodoDetails(li) {
         notes: li.dataset.notes || "",
         dueDate: li.dataset.dueDate || "",
         priority: li.dataset.priority || "none",
+        tag: li.dataset.tag || "none",
         createdAt: li.dataset.createdAt || ""
     };
 }
@@ -62,8 +65,10 @@ function applyTodoDetails(li, details) {
     li.dataset.notes = details.notes || "";
     li.dataset.dueDate = details.dueDate || "";
     li.dataset.priority = details.priority || "none";
+    li.dataset.tag = details.tag || "none";
     li.dataset.createdAt = details.createdAt || "";
     setDueHint(li);
+    setTagChip(li);
 }
 
 function createTodoItem(text) {
@@ -80,6 +85,10 @@ function createTodoItem(text) {
     dueHint.className = "todo-due-hint";
     dueHint.hidden = true;
 
+    const tagChip = document.createElement("span");
+    tagChip.className = "todo-tag";
+    tagChip.hidden = true;
+
     const detailsButton = document.createElement("button");
     detailsButton.type = "button";
     detailsButton.className = "todo-details";
@@ -92,7 +101,7 @@ function createTodoItem(text) {
     deleteButton.dataset.action = "bin";
     deleteButton.textContent = "X";
 
-    li.append(checkbox, span, dueHint, detailsButton, deleteButton);
+    li.append(checkbox, span, tagChip, dueHint, detailsButton, deleteButton);
     return li;
 }
 
@@ -138,6 +147,26 @@ function setDueHint(li) {
     dueHint.hidden = true;
 }
 
+function setTagChip(li) {
+    const tagChip = li.querySelector(".todo-tag");
+    if (!tagChip) {
+        return;
+    }
+
+    const tag = li.dataset.tag || "none";
+    tagChip.classList.remove("work", "home", "personal");
+
+    if (tag === "none") {
+        tagChip.textContent = "";
+        tagChip.hidden = true;
+        return;
+    }
+
+    tagChip.textContent = tag.charAt(0).toUpperCase() + tag.slice(1);
+    tagChip.classList.add(tag);
+    tagChip.hidden = false;
+}
+
 function createBinnedItem(text, isDone, details) {
     const li = document.createElement("li");
     li.dataset.isDone = isDone ? "true" : "false";
@@ -170,6 +199,7 @@ function saveTodos() {
             notes: li.dataset.notes || "",
             dueDate: li.dataset.dueDate || "",
             priority: li.dataset.priority || "none",
+            tag: li.dataset.tag || "none",
             createdAt: li.dataset.createdAt || ""
         };
     });
@@ -181,6 +211,7 @@ function saveTodos() {
             notes: li.dataset.notes || "",
             dueDate: li.dataset.dueDate || "",
             priority: li.dataset.priority || "none",
+            tag: li.dataset.tag || "none",
             createdAt: li.dataset.createdAt || ""
         };
     });
@@ -195,6 +226,7 @@ function saveTodos() {
             notes: li.dataset.notes || "",
             dueDate: li.dataset.dueDate || "",
             priority: li.dataset.priority || "none",
+            tag: li.dataset.tag || "none",
             createdAt: li.dataset.createdAt || ""
         };
     });
@@ -220,12 +252,16 @@ function filterTodos() {
 
     function matchRow(li) {
         const text = li.querySelector("span").textContent.toLowerCase();
-        li.hidden = query !== "" && !text.includes(query);
+        const textMatch = query === "" || text.includes(query);
+        const tag = todoTagFilter.value;
+        const tagMatch = tag === "all" || li.dataset.tag === tag;
+        li.hidden = !(textMatch && tagMatch);
     }
 
     function showAllRows(list) {
         list.querySelectorAll("li").forEach(function (li) {
-            li.hidden = false;
+            const tag = todoTagFilter.value;
+            li.hidden = tag !== "all" && li.dataset.tag !== tag;
         });
     }
 
@@ -349,6 +385,10 @@ function handleListDblClick(event) {
         return;
     }
 
+    if (span.classList.contains("todo-due-hint") || span.classList.contains("todo-tag")) {
+        return;
+    }
+
     startEdit(span);
 }
 
@@ -442,6 +482,7 @@ function openTaskEditor(li) {
     taskEditorNotes.value = li.dataset.notes || "";
     taskEditorDue.value = li.dataset.dueDate || "";
     taskEditorPriority.value = li.dataset.priority || "none";
+    taskEditorTag.value = li.dataset.tag || "none";
     taskEditorCreated.textContent = li.dataset.createdAt || "-";
     taskEditorDone.checked = li.querySelector("input[type='checkbox']").checked;
     taskEditor.hidden = false;
@@ -458,6 +499,7 @@ function closeTaskEditor() {
             notes: taskEditorNotes.value,
             dueDate: taskEditorDue.value,
             priority: taskEditorPriority.value,
+            tag: taskEditorTag.value,
             createdAt: editorItem.dataset.createdAt || todayDate()
         });
 
@@ -499,6 +541,7 @@ completedList.addEventListener("focusout", handleListBlur);
 todoSearch.addEventListener("input", filterTodos);
 todoSearchIn.addEventListener("change", filterTodos);
 todoSort.addEventListener("change", sortTodos);
+todoTagFilter.addEventListener("change", filterTodos);
 
 todoForm.addEventListener("submit", function (event) {
     event.preventDefault();
@@ -513,6 +556,7 @@ todoForm.addEventListener("submit", function (event) {
         notes: "",
         dueDate: "",
         priority: "none",
+        tag: "none",
         createdAt: todayDate()
     });
     todoList.append(li);

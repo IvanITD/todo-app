@@ -52,6 +52,13 @@
                         <option value="due">Due date</option>
                         <option value="priority">Priority</option>
                     </select>
+                    <label for="todo-tag-filter">Tag</label>
+                    <select aria-label="Filter by tag" id="todo-tag-filter">
+                        <option value="all">All tags</option>
+                        <option value="work">Work</option>
+                        <option value="home">Home</option>
+                        <option value="personal">Personal</option>
+                    </select>
                 </div>
             </div>
             <p id="todo-empty" class="empty-message" hidden>No todos yet. Add one above.</p>
@@ -111,7 +118,13 @@
                     <option value="medium">Medium</option>
                     <option value="high">High</option>
                 </select>
-
+                <label for="task-editor-tag">Tag</label>
+                <select id="task-editor-tag">
+                    <option value="none">None</option>
+                    <option value="work">Work</option>
+                    <option value="home">Home</option>
+                    <option value="personal">Personal</option>
+                </select>
                 <p id="task-editor-created-wrap">Created: <span id="task-editor-created"></span></p>
                 
                 <label for="task-editor-done">
