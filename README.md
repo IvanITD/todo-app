@@ -3,7 +3,7 @@
 A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or backend — todos are saved in the browser with `localStorage`.
 
 **Live demo:** [https://ivanitd.github.io/todo-app/](https://ivanitd.github.io/todo-app/)  
-**Version:** 1.8.1  
+**Version:** 1.8.2  
 **Author:** Ivan Ivanov  
 **License:** [MIT](LICENSE)
 
@@ -50,7 +50,7 @@ Open `index.html` in a browser, or use Live Server in your editor. No install st
 
 ## Version gallery
 
-Screenshots of the real HTML and CSS at each **main** release live in a closed section below. Bugfix tags (v1.3.1, v1.7.1, v1.7.2, v1.8.1) are skipped. Same sample todos in every shot.
+Screenshots of the real HTML and CSS at each **main** release live in a closed section below. Bugfix tags (v1.3.1, v1.7.1, v1.7.2, v1.8.1, v1.8.2) are skipped. Same sample todos in every shot.
 
 <details>
 <summary><strong>Show version screenshots</strong></summary>
@@ -148,6 +148,7 @@ The app was built in phases — structure and styling first, then behavior, then
 | **v1.7.2** | Add text box hover — gold border only, no bronze fill | Done |
 | **Phase 13** | Due-soon hint on the row — Overdue / Today / Tomorrow | Done |
 | **v1.8.1** | Theme switch — sun / moon pill instead of the Dark / Light chip | Done |
+| **v1.8.2** | Even sun rays (SVG) and Safari press hop fix | Done |
 
 ## How the Completed Toggle Works
 
@@ -206,7 +207,7 @@ Each active/completed row has a `.todo-due-hint` span (created in `createTodoIte
 
 ## How the Theme Switch Works
 
-`#theme-toggle` is still one `<button>` in the header (same `id`, same click, same `todoTheme` key). Inside it: a sun, a sliding knob, and a moon. CSS draws the icons and slides the knob when `<html>` has `data-theme="dark"`. Do not set `themeToggle.textContent` — that would wipe the inner spans. Dark track is charcoal `#2b2b2b`, not cream, so the pill does not vanish into the olive header. Do not put `#theme-toggle` on the brown `#8d7f60` button group.
+`#theme-toggle` is a `div` with `role="button"` in the header (same `id`, same click, same `todoTheme` key). Inside it: a sun, a sliding knob, and a moon. The sun is an SVG — eight copies of one bar, rotated around the center — so the rays stay even. CSS slides the knob when `<html>` has `data-theme="dark"`. Do not set `themeToggle.textContent` — that would wipe the inner markup. Dark track is charcoal `#2b2b2b`, not cream, so the pill does not vanish into the olive header. Do not put `#theme-toggle` on the brown `#8d7f60` button group. The pill uses whole-pixel sizes so Safari does not hop the sun on press. Enter and Space still toggle the theme.
 
 ## How Persistence Works
 
