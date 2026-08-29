@@ -629,6 +629,14 @@ themeToggle.addEventListener("click", function () {
     setTheme(nextTheme);
 });
 
+themeToggle.addEventListener("keydown", function (event) {
+    if (event.key !== "Enter" && event.key !== " ") {
+        return;
+    }
+    event.preventDefault();
+    themeToggle.click();
+});
+
 taskEditorClose.addEventListener("click", closeTaskEditor);
 taskEditorBackdrop.addEventListener("click", closeTaskEditor);
 
