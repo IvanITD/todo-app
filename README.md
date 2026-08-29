@@ -3,7 +3,7 @@
 A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or backend — todos are saved in the browser with `localStorage`.
 
 **Live demo:** [https://ivanitd.github.io/todo-app/](https://ivanitd.github.io/todo-app/)  
-**Version:** 1.9.0  
+**Version:** 1.9.1  
 **Author:** Ivan Ivanov  
 **License:** [MIT](LICENSE)
 
@@ -21,7 +21,7 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 - Due-soon chips on the row: **Overdue**, **Today**, **Tomorrow** (set the date in ☰; later dates stay quiet)
 - Tag chips on the row: **Work**, **Home**, **Personal** (set in ☰; None hides the chip)
 - Search, **Search in**, Sort, and **Tag** sit in one toolbar card (`#todo-tools`)
-- Search box filters todos by name (hidden, not deleted)
+- Search box filters todos by name as you type (hidden, not deleted). Empty field shows an olive/cream glass on the right; typed text shows a matching **×** that clears the box
 - **Search in** limits search to All lists, Active, Completed, or Bin — and opens Completed or Bin when you search there
 - **Tag** filter shows All tags, or only Work, Home, or Personal (works with search)
 - Sort dropdown reorders active and completed lists by date added, due date, or priority
@@ -36,7 +36,7 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 ## How to use
 
 1. Type a task and click **Add** (or press Enter).
-2. Use **Search todos** to show only names that match. Use **Search in** for **All lists**, **Active**, **Completed**, or **Bin**. Searching Completed or Bin (or All, when those lists have a match) opens that section. Clear the box to see the full list again.
+2. Use **Search todos** to show only names that match (live as you type). Use **Search in** for **All lists**, **Active**, **Completed**, or **Bin**. Searching Completed or Bin (or All, when those lists have a match) opens that section. Click the **×** in the search box (or clear the text) to see the full list again.
 3. Use the sort menu for **Date added**, **Due date**, or **Priority** (set due date and priority in **☰**). Use **Tag** to show All tags, or only Work, Home, or Personal.
 4. Check the circle to complete it. Turn on **Show Completed Todos** to see that list. **Move all to Bin** sends every completed item to the Bin.
 5. Double-click the text to rename a task, or click **☰** for the full editor (notes, due date, priority, tag, and more). Close or click the dim backdrop to save. **Overdue**, **Today**, or **Tomorrow** appears on the row when the due date needs attention. **Work**, **Home**, or **Personal** appears when a tag is set.
@@ -52,7 +52,7 @@ Open `index.html` in a browser, or use Live Server in your editor. No install st
 
 ## Version gallery
 
-Screenshots of the real HTML and CSS at each **main** release live in a closed section below. Bugfix tags (v1.3.1, v1.7.1, v1.7.2, v1.8.1, v1.8.2) are skipped. Same sample todos in every shot.
+Screenshots of the real HTML and CSS at each **main** release live in a closed section below. Bugfix tags (v1.3.1, v1.7.1, v1.7.2, v1.8.1, v1.8.2, v1.9.1) are skipped. Same sample todos in every shot.
 
 <details>
 <summary><strong>Show version screenshots</strong></summary>
@@ -158,6 +158,7 @@ The app was built in phases — structure and styling first, then behavior, then
 | **v1.8.1** | Theme switch — sun / moon pill instead of the Dark / Light chip | Done |
 | **v1.8.2** | Even sun rays (SVG) and Safari press hop fix | Done |
 | **Phase 14** | Tags / color — Work, Home, Personal, and a filter by tag | Done |
+| **v1.9.1** | Search glass on the right, and a matching **×** to clear | Done |
 
 ## How the Completed Toggle Works
 
@@ -183,9 +184,9 @@ The **Completed** checkbox in the overlay uses the same circular style as the li
 
 ## How Search Works
 
-`#todo-search` is **outside** the add form so Enter does not create a todo. Search, **Search in**, Sort, and **Tag** live in one `#todo-tools` card. `#todo-search-in` sits under the search box, also outside the form. Option values: `all`, `active`, `completed`, `bin` (must match JS).
+`#todo-search` is **outside** the add form so Enter does not create a todo. Search, **Search in**, Sort, and **Tag** live in one `#todo-tools` card. The search field sits in `.todo-search-wrap` with a decorative `.todo-search-icon` (not a button) and `.todo-search-clear` (`type="button"`). `#todo-search-in` sits under the search box, also outside the form. Option values: `all`, `active`, `completed`, `bin` (must match JS).
 
-On each keystroke, `filterTodos` compares the query to each row’s name (case-insensitive) and sets `li.hidden` on non-matches. Changing **Search in** runs the same function (`change`, not `input`). Clearing the box shows every row again. Search does not change `localStorage`.
+On each keystroke, `filterTodos` compares the query to each row’s name (case-insensitive) and sets `li.hidden` on non-matches. Changing **Search in** runs the same function (`change`, not `input`). The glass shows when the box is empty (`:placeholder-shown`); the **×** shows when there is text. Clicking **×** sets the value to `""`, focuses the field, and runs `filterTodos`. WebKit’s own search glass and cancel control are turned off so ours sit on the right in olive `#8d7f60` (cream `#d7c79e` in dark). Search does not change `localStorage`.
 
 - **All lists** — search active, completed, and Bin. If the query matches a completed or binned name, that section opens.
 - **Active** — search the main list only
