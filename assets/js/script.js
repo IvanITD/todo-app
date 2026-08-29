@@ -1,6 +1,7 @@
 const todoForm = document.getElementById("todo-form");
 const todoInput = document.getElementById("todo-input");
 const todoSearch = document.getElementById("todo-search");
+const todoSearchClear = document.querySelector(".todo-search-clear");
 const todoSearchIn = document.getElementById("todo-search-in");
 const completedTodoCheckbox = document.getElementById("completed-todo-checkbox");
 const binCheckbox = document.getElementById("bin-checkbox");
@@ -539,6 +540,12 @@ todoList.addEventListener("focusout", handleListBlur);
 completedList.addEventListener("focusout", handleListBlur);
 
 todoSearch.addEventListener("input", filterTodos);
+todoSearchClear.addEventListener("click", function () {
+    todoSearch.value = "";
+    todoSearch.focus();
+    filterTodos();
+});
+
 todoSearchIn.addEventListener("change", filterTodos);
 todoSort.addEventListener("change", sortTodos);
 todoTagFilter.addEventListener("change", filterTodos);

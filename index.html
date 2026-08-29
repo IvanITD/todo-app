@@ -37,7 +37,11 @@
                 <button id="todo-add" type="submit">Add</button>
             </form>
             <div id="todo-tools">
-                <input aria-label="Search todos" id="todo-search" type="search" placeholder="Search todos">
+                <div class="todo-search-wrap">
+                    <input aria-label="Search todos" id="todo-search" type="search" placeholder="Search todos">
+                    <span class="todo-search-icon" aria-hidden="true"></span>
+                    <button type="button" class="todo-search-clear" aria-label="Clear search"></button>
+                </div>
                 <div id="todo-tools-row">
                     <label for="todo-search-in">Search in</label>
                     <select aria-label="Search in" id="todo-search-in">
