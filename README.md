@@ -3,7 +3,7 @@
 A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or backend — todos are saved in the browser with `localStorage`.
 
 **Live demo:** [https://ivanitd.github.io/todo-app/](https://ivanitd.github.io/todo-app/)  
-**Version:** 1.11.0  
+**Version:** 1.12.0  
 **Author:** Ivan Ivanov  
 **License:** [MIT](LICENSE)
 
@@ -17,7 +17,9 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 - Check an item to move it to the completed list
 - Uncheck a completed item to move it back
 - Double-click todo text to edit (Enter or click away to save, Escape to cancel)
-- **☰** opens a task editor overlay (name, notes, due date, priority, tag, subtasks, created date, completed)
+- **☰** opens a task editor overlay (name, notes, due date, repeat, priority, tag, subtasks, created date, completed)
+- Repeat in ☰: None, Daily, Weekly (Mon–Fri), Weekend, Fortnight (all days + **×2**), Monthly, or Custom. Seven day circles stay visible; the dropdown fills them, and clicking a circle can set Custom
+- Checking off a repeating task keeps it Active, moves the due date forward, and writes **Last done** under the name. Too early shows a toast at the top instead of changing the date
 - Subtasks in ☰: checklist with a count (`2 of 3`), progress bar, and a left olive rail (saved on the task)
 - Due-soon chips on the row: **Overdue**, **Today**, **Tomorrow** (set the date in ☰; later dates stay quiet)
 - Tag chips on the row: **Work**, **Home**, **Personal** (set in ☰; None hides the chip)
@@ -41,7 +43,7 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 2. Use **Search todos** to show only names that match (live as you type). Use **Search in** for **All lists**, **Active**, **Completed**, or **Bin**. Searching Completed or Bin (or All, when those lists have a match) opens that section. Click the **×** in the search box (or clear the text) to see the full list again.
 3. Use the sort menu for **Date added**, **Due date**, **Priority**, or **Custom order** (set due date and priority in **☰**). Use **Tag** to show All tags, or only Work, Home, or Personal.
 4. Drag the 6-dot grip on the left of a row to change the order. That sets Sort to **Custom order**. Check the circle to complete it. Turn on **Show Completed Todos** to see that list. **Move all to Bin** sends every completed item to the Bin.
-5. Double-click the text to rename a task, or click **☰** for the full editor (notes, due date, priority, tag, subtasks, and more). Close or click the dim backdrop to save. **Overdue**, **Today**, or **Tomorrow** appears on the row when the due date needs attention. **Work**, **Home**, or **Personal** appears when a tag is set. Subtasks stay in ☰ (count and bar update as you check them).
+5. Double-click the text to rename a task, or click **☰** for the full editor (notes, due date, repeat, priority, tag, subtasks, and more). Close or click the dim backdrop to save. **Overdue**, **Today**, or **Tomorrow** appears on the row when the due date needs attention. **Work**, **Home**, or **Personal** appears when a tag is set. Subtasks stay in ☰ (count and bar update as you check them). A repeating task stays in Active when you check it off; **Last done** appears under the name. A toast at the top confirms the next due date, or says it is too early.
 6. Click **X** to move one task to the **Bin**.
 7. Open **Bin** to restore a task, restore all, delete one forever, or empty the bin.
 8. Click the sun / moon switch in the header to change theme.
@@ -118,6 +120,12 @@ Screenshots of the real HTML and CSS at each **main** release live in a closed s
 <img src="assets/screenshots/v1.11.0.png" width="200" alt="v1.11.0 Drag">
 </td>
 </tr>
+<tr>
+<td align="center" valign="top">
+<strong>v1.12.0</strong><br>Recurring<br>
+<img src="assets/screenshots/v1.12.0.png" width="200" alt="v1.12.0 Recurring">
+</td>
+</tr>
 </table>
 
 </details>
@@ -171,6 +179,7 @@ The app was built in phases — structure and styling first, then behavior, then
 | **v1.9.1** | Search glass on the right, and a matching **×** to clear | Done |
 | **Phase 15** | Subtasks in the editor — count, progress bar, left rail | Done |
 | **Phase 16** | Drag to reorder — left grip, custom order | Done |
+| **Phase 17** | Recurring tasks — Repeat in ☰, weekday circles, Last done | Done |
 
 ## How the Completed Toggle Works
 
@@ -233,6 +242,16 @@ Drag uses `mousedown` / `mousemove` / `mouseup` on `document`, not HTML5 `dragga
 
 Sort used to undo a drag (`saveTodos` → `updateEmptyMessages` → `sortTodos`). Custom order skips that sort so the new order sticks. Picking Date added, Due date, or Priority still sorts on purpose.
 
+## How Recurring Works
+
+Repeat lives in ☰, after Due date and before Priority (`#task-editor-repeat` plus `#task-editor-repeat-days`). The seven day buttons and **×2** stay on screen. The dropdown fills the circles; clicking a circle updates Repeat when the days match a preset (Mon–Fri → Weekly, Sat+Sun → Weekend, all seven → Daily, all seven + ×2 → Fortnight). Monthly still uses the due date’s weekday as a hint.
+
+There is no extra `localStorage` key. `repeat`, `repeatDays`, and `lastCompleted` sit on each todo next to `tag`. `readRepeatDays` / `writeRepeatDays` store the day list as JSON, like subtasks.
+
+Checking off a repeating task runs `tryCompleteRepeatingTodo`. If the due date is still in the future, the checkbox snaps back and `showToast` shows a message at the top. If it is due today, overdue, or has no date, the due date moves forward, `lastCompleted` becomes today, and **Last done** appears under the name (`.todo-last-done` in `.todo-text`). The row stays in Active. Repeat **None** still goes to Completed.
+
+`showToast` is the shared top-of-page message (slide in, then slide up). Repeat uses `showTodoMessage` so the toast includes the task name.
+
 ## How Due Hints Work
 
 Each active/completed row has a `.todo-due-hint` span (created in `createTodoItem`, not in `index.html`). Bin rows do not. `applyTodoDetails` calls `setDueHint`, which compares `dueDate` to `todayDate()` and `tomorrowDate()`. No extra `localStorage` key — it reads the due date already saved on the row.
@@ -260,12 +279,12 @@ Search and Tag both have to match. When **Search in** skips a list, Tag still ap
 
 After add, delete, complete, edit, bin, or closing the task editor, the app saves:
 
-- `todos` — active and completed items as `{ text, isDone, notes, dueDate, priority, tag, subtasks, createdAt }`
+- `todos` — active and completed items as `{ text, isDone, notes, dueDate, lastCompleted, priority, tag, repeat, repeatDays, subtasks, createdAt }`
 - `binnedTodos` — bin items with the same shape (`isDone` remembers whether to restore to active or completed)
 - `todoTheme` — `"dark"` or `"light"`
 - `todoSort` — `"created"`, `"due"`, `"priority"`, or `"manual"`
 
-On load, both lists and the bin are rebuilt from that data. If nothing is saved, they start empty. Todos created before v1.3.0 still load; extra fields start empty until you open and close the editor once. Todos created before v1.9.0 load with tag **None**. Todos created before v1.10.0 load with no subtasks.
+On load, both lists and the bin are rebuilt from that data. If nothing is saved, they start empty. Todos created before v1.3.0 still load; extra fields start empty until you open and close the editor once. Todos created before v1.9.0 load with tag **None**. Todos created before v1.10.0 load with no subtasks. Todos created before v1.12.0 load with Repeat **None** and no last-done date.
 
 ## License
 
