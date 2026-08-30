@@ -11,6 +11,7 @@ const todoList = document.getElementById("todo-list");
 const completedList = document.getElementById("completed-todo-list");
 const completedBinAll = document.getElementById("completed-bin-all");
 const todoEmpty = document.getElementById("todo-empty");
+const todoToasts = document.getElementById("todo-toasts");
 const completedEmpty = document.getElementById("completed-empty");
 const binList = document.getElementById("bin-list");
 const binEmpty = document.getElementById("bin-empty");
@@ -30,6 +31,9 @@ const taskEditorNotes = document.getElementById("task-editor-notes");
 const taskEditorDue = document.getElementById("task-editor-due");
 const taskEditorPriority = document.getElementById("task-editor-priority");
 const taskEditorTag = document.getElementById("task-editor-tag");
+const taskEditorRepeat = document.getElementById("task-editor-repeat");
+const taskEditorRepeatFortnight = document.getElementById("task-editor-repeat-fortnight");
+const taskEditorRepeatDays = document.getElementById("task-editor-repeat-days");
 const taskEditorSubtasks = document.getElementById("task-editor-subtasks");
 const taskEditorSubtaskInput = document.getElementById("task-editor-subtask-input");
 const taskEditorSubtaskAdd = document.getElementById("task-editor-subtask-add");
@@ -63,8 +67,11 @@ function getTodoDetails(li) {
     return {
         notes: li.dataset.notes || "",
         dueDate: li.dataset.dueDate || "",
+        lastCompleted: li.dataset.lastCompleted || "",
         priority: li.dataset.priority || "none",
         tag: li.dataset.tag || "none",
+        repeat: li.dataset.repeat || "none",
+        repeatDays: readRepeatDays(li),
         subtasks: readSubtasks(li),
         createdAt: li.dataset.createdAt || ""
     };
@@ -73,12 +80,16 @@ function getTodoDetails(li) {
 function applyTodoDetails(li, details) {
     li.dataset.notes = details.notes || "";
     li.dataset.dueDate = details.dueDate || "";
+    li.dataset.lastCompleted = details.lastCompleted || "";
     li.dataset.priority = details.priority || "none";
     li.dataset.tag = details.tag || "none";
+    li.dataset.repeat = details.repeat || "none";
+    writeRepeatDays(li, details.repeatDays || []);
     writeSubtasks(li, details.subtasks || []);
     li.dataset.createdAt = details.createdAt || "";
     setDueHint(li);
     setTagChip(li);
+    setLastDone(li);
 }
 
 function createTodoItem(text) {
@@ -94,8 +105,16 @@ function createTodoItem(text) {
     dragHandle.dataset.action = "drag";
     dragHandle.setAttribute("aria-label", "Drag to reorder");
     
+    const textWrap = document.createElement("div");
+    textWrap.className = "todo-text";
     const span = document.createElement("span");
     span.textContent = text;
+
+    const lastDone = document.createElement("span");
+    lastDone.className = "todo-last-done";
+    lastDone.hidden = true;
+
+    textWrap.append(span, lastDone);
 
     const dueHint = document.createElement("span");
     dueHint.className = "todo-due-hint";
@@ -117,7 +136,7 @@ function createTodoItem(text) {
     deleteButton.dataset.action = "bin";
     deleteButton.textContent = "X";
 
-    li.append(dragHandle, checkbox, span, tagChip, dueHint, detailsButton, deleteButton);
+    li.append(dragHandle, checkbox, textWrap, tagChip, dueHint, detailsButton, deleteButton);
     return li;
 }
 
@@ -271,6 +290,159 @@ function setTagChip(li) {
     tagChip.hidden = false;
 }
 
+function formatLastDone(iso) {
+    const parts = iso.split("-").map(Number);
+    const date = new Date(parts[0], parts[1] - 1, parts[2]);
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return "Last done " + date.getDate() + " " + months[date.getMonth()];
+}
+
+function setLastDone(li) {
+    const lastDone = li.querySelector(".todo-last-done");
+    if (!lastDone) {
+        return;
+    }
+
+    const repeat = li.dataset.repeat || "none";
+    const completed = li.dataset.lastCompleted || "";
+    if (repeat === "none" || completed === "") {
+        lastDone.textContent = "";
+        lastDone.hidden = true;
+        return;
+    }
+
+    lastDone.textContent = formatLastDone(completed);
+    lastDone.hidden = false;
+}
+
+function showToast(message) {
+    const toast = document.createElement("p");
+    toast.className = "todo-toast";
+    toast.textContent = message;
+    todoToasts.append(toast);
+
+    window.setTimeout(function () {
+        toast.classList.add("todo-toast-out");
+        window.setTimeout(function () {
+            toast.remove();
+        }, 400);
+    }, 2800);
+}
+
+function showTodoMessage(li, message) {
+    const nameSpan = li.querySelector(".todo-text span") || li.querySelector("span");
+    const name = nameSpan ? nameSpan.textContent.trim() : "";
+    showToast(name ? name + " — " + message : message);
+}
+
+function formatShortDate(iso) {
+    const parts = iso.split("-").map(Number);
+    const date = new Date(parts[0], parts[1] - 1, parts[2]);
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    return date.getDate() + " " + months[date.getMonth()];
+}
+
+function dateFromIso(iso) {
+    const parts = iso.split("-").map(Number);
+    return new Date(parts[0], parts[1] - 1, parts[2]);
+}
+
+function isoFromDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+}
+
+function addDays(date, count) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate() + count);
+}
+
+function addMonths(date, count) {
+    const day = date.getDate();
+    const nextMonth = new Date(date.getFullYear(), date.getMonth() + count, 1);
+    const lastDay = new Date(nextMonth.getFullYear(), nextMonth.getMonth() + 1, 0).getDate();
+    return new Date(nextMonth.getFullYear(), nextMonth.getMonth(), Math.min(day, lastDay));
+}
+
+function nextOnDays(fromDate, dayKeys) {
+    const keys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+    let date = addDays(fromDate, 1);
+    for (let i = 0; i < 400; i += 1) {
+        if (dayKeys.includes(keys[date.getDay()])) {
+            return date;
+        }
+        date = addDays(date, 1);
+    }
+    return addDays(fromDate, 1);
+}
+
+function nextRepeatDueDate(dueDate, repeat, repeatDays) {
+    const today = dateFromIso(todayDate());
+    const current = dateFromIso(dueDate);
+    let next;
+    let days = repeatDays;
+
+    if (repeat === "daily") {
+        days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+    } else if (repeat === "weekly") {
+        days = ["mon", "tue", "wed", "thu", "fri"];
+    } else if (repeat === "weekend") {
+        days = ["sat", "sun"];
+    } else if (repeat === "fortnight") {
+        next = addDays(current, 14);
+        while (next <= today) {
+            next = addDays(next, 14);
+        }
+        return isoFromDate(next);
+    } else if (repeat === "monthly") {
+        next = addMonths(current, 1);
+        while (next <= today) {
+            next = addMonths(next, 1);
+        }
+        return isoFromDate(next);
+    }
+
+    if (!days || days.length === 0) {
+        return isoFromDate(addDays(current, 1));
+    }
+
+    next = nextOnDays(current, days);
+    while (next <= today) {
+        next = nextOnDays(next, days);
+    }
+    return isoFromDate(next);
+}
+
+function tryCompleteRepeatingTodo(li) {
+    const repeat = li.dataset.repeat || "none";
+    const days = readRepeatDays(li);
+    if (repeat === "none" || (repeat === "custom" && days.length === 0)) {
+        return "normal";
+    }
+
+    const due = li.dataset.dueDate || "";
+    if (due !== "" && due > todayDate()) {
+        showTodoMessage(li, "This is due " + formatShortDate(due) + ". Come back then.");
+        return "blocked";
+    }
+
+    li.dataset.dueDate = nextRepeatDueDate(due || todayDate(), repeat, days);
+    li.dataset.lastCompleted = todayDate();
+    setDueHint(li);
+    setLastDone(li);
+
+    const nextDue = li.dataset.dueDate;
+    let nextLabel = formatShortDate(nextDue);
+    if (nextDue === todayDate()) {
+        nextLabel = "today";
+    } else if (nextDue === tomorrowDate()) {
+        nextLabel = "tomorrow";
+    }
+    showTodoMessage(li, "Next due " + nextLabel);
+    return "advanced";
+}
+
 function createSubtaskItem(text, isDone) {
     const li = document.createElement("li");
 
@@ -318,6 +490,122 @@ function readSubtasks(li) {
 
 function writeSubtasks(li, subtasks) {
     li.dataset.subtasks = JSON.stringify(subtasks);
+}
+
+function readRepeatDays(li) {
+    try {
+        const parsed = JSON.parse(li.dataset.repeatDays || "[]");
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+        return [];
+    }
+}
+
+function writeRepeatDays(li, days) {
+    li.dataset.repeatDays = JSON.stringify(days);
+}
+
+function collectEditorRepeatDays() {
+    return [...taskEditorRepeatDays.querySelectorAll(".task-editor-repeat-day")]
+        .filter(function (button) {
+            return button.getAttribute("aria-pressed") === "true";
+        })
+        .map(function (button) {
+            return button.dataset.day;
+        });
+}
+
+function setRepeatDayButtons(days) {
+    const selected = days || [];
+    taskEditorRepeatDays.querySelectorAll(".task-editor-repeat-day").forEach(function (button) {
+        const isOn = selected.includes(button.dataset.day);
+        button.setAttribute("aria-pressed", isOn ? "true" : "false");
+    });
+}
+
+function setFortnightPressed(isOn) {
+    taskEditorRepeatFortnight.setAttribute("aria-pressed", isOn ? "true" : "false");
+}
+
+function weekdayFromDueDate(dueDate) {
+    if (!dueDate) {
+        return "";
+    }
+
+    const parts = dueDate.split("-").map(Number);
+    const date = new Date(parts[0], parts[1] - 1, parts[2]);
+    if (Number.isNaN(date.getTime())) {
+        return "";
+    }
+
+    const keys = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+    return keys[date.getDay()];
+}
+
+function daysForRepeat(repeat, dueDate) {
+    if (repeat === "daily") {
+        return ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+    }
+    if (repeat === "weekend") {
+        return ["sat", "sun"];
+    }
+    if (repeat === "weekly") {
+        return ["mon", "tue", "wed", "thu", "fri"];
+    }
+    if (repeat === "fortnight") {
+        return ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+    }
+    if (repeat === "monthly") {
+        const weekday = weekdayFromDueDate(dueDate);
+        return weekday ? [weekday] : [];
+    }
+    if (repeat === "custom") {
+        return null;
+    }
+    return [];
+}
+
+function applyRepeatFromDropdown() {
+    const repeat = taskEditorRepeat.value;
+    const nextDays = daysForRepeat(repeat, taskEditorDue.value);
+    if (nextDays !== null) {
+        setRepeatDayButtons(nextDays);
+    }
+    setFortnightPressed(repeat === "fortnight");
+}
+
+function dayKey(days) {
+    return (days || []).slice().sort().join(",");
+}
+
+function matchRepeatFromControls() {
+    const days = collectEditorRepeatDays();
+    const key = dayKey(days);
+    const allDays = "fri,mon,sat,sun,thu,tue,wed";
+    const weekdays = "fri,mon,thu,tue,wed";
+    const weekend = "sat,sun";
+    const fortnightOn = taskEditorRepeatFortnight.getAttribute("aria-pressed") === "true";
+
+    if (fortnightOn && key === allDays) {
+        taskEditorRepeat.value = "fortnight";
+        return;
+    }
+
+    if (fortnightOn) {
+        setFortnightPressed(false);
+    }
+
+    if (key === "") {
+        taskEditorRepeat.value = "none";
+    } else if (key === allDays) {
+        taskEditorRepeat.value = "daily";
+    } else if (key === weekdays) {
+        taskEditorRepeat.value = "weekly";
+    } else if (key === weekend) {
+        taskEditorRepeat.value = "weekend";
+    } else {
+        taskEditorRepeat.value = "custom";
+    }
 }
 
 function collectEditorSubtasks() {
@@ -368,8 +656,11 @@ function saveTodos() {
             isDone: false,
             notes: li.dataset.notes || "",
             dueDate: li.dataset.dueDate || "",
+            lastCompleted: li.dataset.lastCompleted || "",
             priority: li.dataset.priority || "none",
             tag: li.dataset.tag || "none",
+            repeat: li.dataset.repeat || "none",
+            repeatDays: readRepeatDays(li),
             subtasks: readSubtasks(li),
             createdAt: li.dataset.createdAt || ""
         };
@@ -381,8 +672,11 @@ function saveTodos() {
             isDone: true,
             notes: li.dataset.notes || "",
             dueDate: li.dataset.dueDate || "",
+            lastCompleted: li.dataset.lastCompleted || "",
             priority: li.dataset.priority || "none",
             tag: li.dataset.tag || "none",
+            repeat: li.dataset.repeat || "none",
+            repeatDays: readRepeatDays(li),
             subtasks: readSubtasks(li),
             createdAt: li.dataset.createdAt || ""
         };
@@ -397,8 +691,11 @@ function saveTodos() {
             isDone: li.dataset.isDone === "true",
             notes: li.dataset.notes || "",
             dueDate: li.dataset.dueDate || "",
+            lastCompleted: li.dataset.lastCompleted || "",
             priority: li.dataset.priority || "none",
             tag: li.dataset.tag || "none",
+            repeat: li.dataset.repeat || "none",
+            repeatDays: readRepeatDays(li),
             subtasks: readSubtasks(li),
             createdAt: li.dataset.createdAt || ""
         };
@@ -569,7 +866,7 @@ function handleListDblClick(event) {
         return;
     }
 
-    if (span.classList.contains("todo-due-hint") || span.classList.contains("todo-tag")) {
+    if (span.classList.contains("todo-due-hint") || span.classList.contains("todo-tag") || span.classList.contains("todo-last-done")) {
         return;
     }
 
@@ -667,6 +964,13 @@ function openTaskEditor(li) {
     taskEditorDue.value = li.dataset.dueDate || "";
     taskEditorPriority.value = li.dataset.priority || "none";
     taskEditorTag.value = li.dataset.tag || "none";
+    taskEditorRepeat.value = li.dataset.repeat || "none";
+    if ((li.dataset.repeat || "none") === "custom") {
+        setRepeatDayButtons(readRepeatDays(li));
+        setFortnightPressed(false);
+    } else {
+        applyRepeatFromDropdown();
+    }
     fillEditorSubtasks(readSubtasks(li));
     taskEditorCreated.textContent = li.dataset.createdAt || "-";
     taskEditorDone.checked = li.querySelector("input[type='checkbox']").checked;
@@ -683,8 +987,11 @@ function closeTaskEditor() {
         applyTodoDetails(editorItem, {
             notes: taskEditorNotes.value,
             dueDate: taskEditorDue.value,
+            lastCompleted: editorItem.dataset.lastCompleted || "",
             priority: taskEditorPriority.value,
             tag: taskEditorTag.value,
+            repeat: taskEditorRepeat.value,
+            repeatDays: collectEditorRepeatDays(),
             subtasks: collectEditorSubtasks(),
             createdAt: editorItem.dataset.createdAt || todayDate()
         });
@@ -693,8 +1000,14 @@ function closeTaskEditor() {
         const shouldBeDone = taskEditorDone.checked;
 
         if (shouldBeDone && !checkbox.checked) {
-            checkbox.checked = true;
-            completedList.append(editorItem);
+            const result = tryCompleteRepeatingTodo(editorItem);
+            if (result === "blocked" || result === "advanced") {
+                checkbox.checked = false;
+                taskEditorDone.checked = false;
+            } else {
+                checkbox.checked = true;
+                completedList.append(editorItem);
+            }
         } else if (!shouldBeDone && checkbox.checked) {
             checkbox.checked = false;
             todoList.append(editorItem);
@@ -755,6 +1068,37 @@ taskEditorSubtasks.addEventListener("click", function (event) {
 
 taskEditorSubtasks.addEventListener("change", updateSubtaskProgress);
 
+taskEditorRepeat.addEventListener("change", applyRepeatFromDropdown);
+
+taskEditorDue.addEventListener("change", function () {
+    const repeat = taskEditorRepeat.value;
+    if (repeat === "monthly") {
+        applyRepeatFromDropdown();
+    }
+});
+
+taskEditorRepeatDays.addEventListener("click", function (event) {
+    const button = event.target.closest(".task-editor-repeat-day");
+    if (!button) {
+        return;
+    }
+
+    const isOn = button.getAttribute("aria-pressed") === "true";
+    button.setAttribute("aria-pressed", isOn ? "false" : "true");
+    matchRepeatFromControls();
+});
+
+taskEditorRepeatFortnight.addEventListener("click", function () {
+    const isOn = taskEditorRepeatFortnight.getAttribute("aria-pressed") === "true";
+    if (isOn) {
+        setFortnightPressed(false);
+        matchRepeatFromControls();
+        return;
+    }
+    taskEditorRepeat.value = "fortnight";
+    applyRepeatFromDropdown();
+});
+
 todoSearchIn.addEventListener("change", filterTodos);
 todoSort.addEventListener("change", function () {
     setSortMode(todoSort.value);
@@ -774,8 +1118,11 @@ todoForm.addEventListener("submit", function (event) {
     applyTodoDetails(li, {
         notes: "",
         dueDate: "",
+        lastCompleted: "",
         priority: "none",
         tag: "none",
+        repeat: "none",
+        repeatDays: [],
         subtasks: [],
         createdAt: todayDate()
     });
@@ -793,6 +1140,13 @@ todoList.addEventListener("change", function (event) {
     }
 
     const li = checkbox.closest("li");
+    const result = tryCompleteRepeatingTodo(li);
+    if (result === "blocked" || result === "advanced") {
+        checkbox.checked = false;
+        saveTodos();
+        return;
+    }
+
     checkbox.checked = true;
     completedList.append(li);
     saveTodos();

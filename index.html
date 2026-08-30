@@ -69,7 +69,7 @@
             <p id="todo-empty" class="empty-message" hidden>No todos yet. Add one above.</p>
             <ul id="todo-list">
             </ul>
-            
+            <div id="todo-toasts" role="status" aria-live="polite"></div>
             <div id="completed-todo-container-checkbox">
                 <input aria-label="Show completed todos" type="checkbox" id="completed-todo-checkbox">
                 <label for="completed-todo-checkbox">Show Completed Todos</label>
@@ -115,6 +115,26 @@
 
                 <label for="task-editor-due">Due date</label>
                 <input id="task-editor-due" type="date">
+                <label for="task-editor-repeat">Repeat</label>
+                <select id="task-editor-repeat">
+                    <option value="none">None</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="weekend">Weekend</option>
+                    <option value="fortnight">Fortnight</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="custom">Custom</option>
+                </select>
+                <div id="task-editor-repeat-days">
+                    <button type="button" class="task-editor-repeat-day" data-day="mon" aria-label="Monday" aria-pressed="false">M</button>
+                    <button type="button" class="task-editor-repeat-day" data-day="tue" aria-label="Tuesday" aria-pressed="false">T</button>
+                    <button type="button" class="task-editor-repeat-day" data-day="wed" aria-label="Wednesday" aria-pressed="false">W</button>
+                    <button type="button" class="task-editor-repeat-day" data-day="thu" aria-label="Thursday" aria-pressed="false">T</button>
+                    <button type="button" class="task-editor-repeat-day" data-day="fri" aria-label="Friday" aria-pressed="false">F</button>
+                    <button type="button" class="task-editor-repeat-day" data-day="sat" aria-label="Saturday" aria-pressed="false">S</button>
+                    <button type="button" class="task-editor-repeat-day" data-day="sun" aria-label="Sunday" aria-pressed="false">S</button>
+                    <button type="button" id="task-editor-repeat-fortnight" aria-label="Every two weeks" aria-pressed="false">×2</button>
+                </div>
 
                 <label for="task-editor-priority">Priority</label>
                 <select id="task-editor-priority">
