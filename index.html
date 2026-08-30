@@ -129,6 +129,19 @@
                     <option value="home">Home</option>
                     <option value="personal">Personal</option>
                 </select>
+                <div id="task-editor-subtasks-block">
+                    <div id="task-editor-subtasks-head">
+                        <p id="task-editor-subtasks-heading">Subtasks</p>
+                        <p id="task-editor-subtasks-count"><span id="task-editor-subtasks-done">0</span> of <span id="task-editor-subtasks-total">0</span></p>
+                    </div>
+                    <div id="task-editor-subtasks-progress" aria-hidden="true">
+                        <div id="task-editor-subtasks-progress-fill"></div>
+                    </div>
+                    <ul id="task-editor-subtasks">
+                    </ul>
+                    <input aria-label="Add subtask" id="task-editor-subtask-input" type="text" placeholder="Add subtask">
+                    <button type="button" id="task-editor-subtask-add">Add</button>
+                </div>
                 <p id="task-editor-created-wrap">Created: <span id="task-editor-created"></span></p>
                 
                 <label for="task-editor-done">

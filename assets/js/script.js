@@ -29,6 +29,12 @@ const taskEditorNotes = document.getElementById("task-editor-notes");
 const taskEditorDue = document.getElementById("task-editor-due");
 const taskEditorPriority = document.getElementById("task-editor-priority");
 const taskEditorTag = document.getElementById("task-editor-tag");
+const taskEditorSubtasks = document.getElementById("task-editor-subtasks");
+const taskEditorSubtaskInput = document.getElementById("task-editor-subtask-input");
+const taskEditorSubtaskAdd = document.getElementById("task-editor-subtask-add");
+const taskEditorSubtasksDone = document.getElementById("task-editor-subtasks-done");
+const taskEditorSubtasksTotal = document.getElementById("task-editor-subtasks-total");
+const taskEditorSubtasksProgressFill = document.getElementById("task-editor-subtasks-progress-fill");
 const taskEditorCreated = document.getElementById("task-editor-created");
 const taskEditorDone = document.getElementById("task-editor-done");
 
@@ -58,6 +64,7 @@ function getTodoDetails(li) {
         dueDate: li.dataset.dueDate || "",
         priority: li.dataset.priority || "none",
         tag: li.dataset.tag || "none",
+        subtasks: readSubtasks(li),
         createdAt: li.dataset.createdAt || ""
     };
 }
@@ -67,6 +74,7 @@ function applyTodoDetails(li, details) {
     li.dataset.dueDate = details.dueDate || "";
     li.dataset.priority = details.priority || "none";
     li.dataset.tag = details.tag || "none";
+    writeSubtasks(li, details.subtasks || []);
     li.dataset.createdAt = details.createdAt || "";
     setDueHint(li);
     setTagChip(li);
@@ -168,6 +176,72 @@ function setTagChip(li) {
     tagChip.hidden = false;
 }
 
+function createSubtaskItem(text, isDone) {
+    const li = document.createElement("li");
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = Boolean(isDone);
+    checkbox.setAttribute("aria-label", "Complete subtask");
+
+    const span = document.createElement("span");
+    span.textContent = text;
+
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.textContent = "X";
+    deleteButton.setAttribute("aria-label", "Delete subtask");
+
+    li.append(checkbox, span, deleteButton);
+    return li;
+}
+
+function updateSubtaskProgress() {
+    const items = taskEditorSubtasks.querySelectorAll("li");
+    const total = items.length;
+    let done = 0;
+
+    items.forEach(function (li) {
+        if (li.querySelector("input[type='checkbox']").checked) {
+            done += 1;
+        }
+    });
+
+    taskEditorSubtasksDone.textContent = String(done);
+    taskEditorSubtasksTotal.textContent = String(total);
+    taskEditorSubtasksProgressFill.style.width = total === 0 ? "0%" : (done / total) * 100 + "%";
+}
+
+function readSubtasks(li) {
+    try {
+        const parsed = JSON.parse(li.dataset.subtasks || "[]");
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+        return [];
+    }
+}
+
+function writeSubtasks(li, subtasks) {
+    li.dataset.subtasks = JSON.stringify(subtasks);
+}
+
+function collectEditorSubtasks() {
+    return [...taskEditorSubtasks.querySelectorAll("li")].map(function (row) {
+        return {
+            text: row.querySelector("span").textContent,
+            isDone: row.querySelector("input[type='checkbox']").checked
+        };
+    });
+}
+
+function fillEditorSubtasks(subtasks) {
+    taskEditorSubtasks.innerHTML = "";
+    subtasks.forEach(function (item) {
+        taskEditorSubtasks.append(createSubtaskItem(item.text, item.isDone));
+    });
+    updateSubtaskProgress();
+}
+
 function createBinnedItem(text, isDone, details) {
     const li = document.createElement("li");
     li.dataset.isDone = isDone ? "true" : "false";
@@ -201,6 +275,7 @@ function saveTodos() {
             dueDate: li.dataset.dueDate || "",
             priority: li.dataset.priority || "none",
             tag: li.dataset.tag || "none",
+            subtasks: readSubtasks(li),
             createdAt: li.dataset.createdAt || ""
         };
     });
@@ -213,6 +288,7 @@ function saveTodos() {
             dueDate: li.dataset.dueDate || "",
             priority: li.dataset.priority || "none",
             tag: li.dataset.tag || "none",
+            subtasks: readSubtasks(li),
             createdAt: li.dataset.createdAt || ""
         };
     });
@@ -228,6 +304,7 @@ function saveTodos() {
             dueDate: li.dataset.dueDate || "",
             priority: li.dataset.priority || "none",
             tag: li.dataset.tag || "none",
+            subtasks: readSubtasks(li),
             createdAt: li.dataset.createdAt || ""
         };
     });
@@ -484,6 +561,7 @@ function openTaskEditor(li) {
     taskEditorDue.value = li.dataset.dueDate || "";
     taskEditorPriority.value = li.dataset.priority || "none";
     taskEditorTag.value = li.dataset.tag || "none";
+    fillEditorSubtasks(readSubtasks(li));
     taskEditorCreated.textContent = li.dataset.createdAt || "-";
     taskEditorDone.checked = li.querySelector("input[type='checkbox']").checked;
     taskEditor.hidden = false;
@@ -501,6 +579,7 @@ function closeTaskEditor() {
             dueDate: taskEditorDue.value,
             priority: taskEditorPriority.value,
             tag: taskEditorTag.value,
+            subtasks: collectEditorSubtasks(),
             createdAt: editorItem.dataset.createdAt || todayDate()
         });
 
@@ -546,6 +625,30 @@ todoSearchClear.addEventListener("click", function () {
     filterTodos();
 });
 
+taskEditorSubtaskAdd.addEventListener("click", function () {
+    const text = taskEditorSubtaskInput.value.trim();
+    if (text === "") {
+        return;
+    }
+
+    taskEditorSubtasks.append(createSubtaskItem(text, false));
+    updateSubtaskProgress();
+    taskEditorSubtaskInput.value = "";
+    taskEditorSubtaskInput.focus();
+});
+
+taskEditorSubtasks.addEventListener("click", function (event) {
+    const button = event.target.closest("button");
+    if (!button) {
+        return;
+    }
+
+    button.closest("li").remove();
+    updateSubtaskProgress();
+});
+
+taskEditorSubtasks.addEventListener("change", updateSubtaskProgress);
+
 todoSearchIn.addEventListener("change", filterTodos);
 todoSort.addEventListener("change", sortTodos);
 todoTagFilter.addEventListener("change", filterTodos);
@@ -564,6 +667,7 @@ todoForm.addEventListener("submit", function (event) {
         dueDate: "",
         priority: "none",
         tag: "none",
+        subtasks: [],
         createdAt: todayDate()
     });
     todoList.append(li);
