@@ -3,7 +3,7 @@
 A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or backend — todos are saved in the browser with `localStorage`.
 
 **Live demo:** [https://ivanitd.github.io/todo-app/](https://ivanitd.github.io/todo-app/)  
-**Version:** 1.10.0  
+**Version:** 1.11.0  
 **Author:** Ivan Ivanov  
 **License:** [MIT](LICENSE)
 
@@ -25,7 +25,8 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 - Search box filters todos by name as you type (hidden, not deleted). Empty field shows an olive/cream glass on the right; typed text shows a matching **×** that clears the box
 - **Search in** limits search to All lists, Active, Completed, or Bin — and opens Completed or Bin when you search there
 - **Tag** filter shows All tags, or only Work, Home, or Personal (works with search)
-- Sort dropdown reorders active and completed lists by date added, due date, or priority
+- Sort dropdown reorders active and completed lists by date added, due date, priority, or **Custom order**
+- Drag the left 6-dot grip to reorder a row (active and completed only). Drag switches Sort to Custom order so the list stays put
 - Empty-state messages when a list has no items
 - Todos persist across page refreshes
 - Light / Dark theme switch in the header (sun and moon on a sliding pill; saved in the browser)
@@ -38,8 +39,8 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 
 1. Type a task and click **Add** (or press Enter).
 2. Use **Search todos** to show only names that match (live as you type). Use **Search in** for **All lists**, **Active**, **Completed**, or **Bin**. Searching Completed or Bin (or All, when those lists have a match) opens that section. Click the **×** in the search box (or clear the text) to see the full list again.
-3. Use the sort menu for **Date added**, **Due date**, or **Priority** (set due date and priority in **☰**). Use **Tag** to show All tags, or only Work, Home, or Personal.
-4. Check the circle to complete it. Turn on **Show Completed Todos** to see that list. **Move all to Bin** sends every completed item to the Bin.
+3. Use the sort menu for **Date added**, **Due date**, **Priority**, or **Custom order** (set due date and priority in **☰**). Use **Tag** to show All tags, or only Work, Home, or Personal.
+4. Drag the 6-dot grip on the left of a row to change the order. That sets Sort to **Custom order**. Check the circle to complete it. Turn on **Show Completed Todos** to see that list. **Move all to Bin** sends every completed item to the Bin.
 5. Double-click the text to rename a task, or click **☰** for the full editor (notes, due date, priority, tag, subtasks, and more). Close or click the dim backdrop to save. **Overdue**, **Today**, or **Tomorrow** appears on the row when the due date needs attention. **Work**, **Home**, or **Personal** appears when a tag is set. Subtasks stay in ☰ (count and bar update as you check them).
 6. Click **X** to move one task to the **Bin**.
 7. Open **Bin** to restore a task, restore all, delete one forever, or empty the bin.
@@ -112,6 +113,10 @@ Screenshots of the real HTML and CSS at each **main** release live in a closed s
 <strong>v1.10.0</strong><br>Subtasks<br>
 <img src="assets/screenshots/v1.10.0.png" width="200" alt="v1.10.0 Subtasks">
 </td>
+<td align="center" valign="top">
+<strong>v1.11.0</strong><br>Drag<br>
+<img src="assets/screenshots/v1.11.0.png" width="200" alt="v1.11.0 Drag">
+</td>
 </tr>
 </table>
 
@@ -165,6 +170,7 @@ The app was built in phases — structure and styling first, then behavior, then
 | **Phase 14** | Tags / color — Work, Home, Personal, and a filter by tag | Done |
 | **v1.9.1** | Search glass on the right, and a matching **×** to clear | Done |
 | **Phase 15** | Subtasks in the editor — count, progress bar, left rail | Done |
+| **Phase 16** | Drag to reorder — left grip, custom order | Done |
 
 ## How the Completed Toggle Works
 
@@ -210,13 +216,22 @@ List rows use `display: flex`. That would override `hidden` the same way the ove
 
 ## How Sort Works
 
-`#todo-sort` sits in `#todo-tools-row` next to **Search in** and **Tag**, outside the add form. It reorders the **active** and **completed** lists only (not the Bin). There is no extra `localStorage` key — it reads `createdAt`, `dueDate`, and `priority` already stored on each row.
+`#todo-sort` sits in `#todo-tools-row` next to **Search in** and **Tag**, outside the add form. It reorders the **active** and **completed** lists only (not the Bin). Date / due / priority still read `createdAt`, `dueDate`, and `priority` on each row. The chosen mode is saved in `todoSort`.
 
 - **Date added** — oldest `createdAt` first  
 - **Due date** — earliest due first; todos with no date go last  
 - **Priority** — High, then Medium, then Low, then None  
+- **Custom order** — leave the lists as they are (used after a drag)
 
-`sortTodos` runs on dropdown `change` and inside `updateEmptyMessages` (before `filterTodos`), so add, restore, and editor saves keep the current sort. `list.append(li)` moves existing rows; it does not copy them.
+`sortTodos` runs on dropdown `change` and inside `updateEmptyMessages` (before `filterTodos`), so add, restore, and editor saves keep the current sort — except Custom order, which returns early. `list.append(li)` moves existing rows; it does not copy them.
+
+## How Drag Works
+
+The 6-dot grip is a `button` with class `todo-drag-handle` (`data-action="drag"`). `createTodoItem` puts it first in the row, before the checkbox. It is not in `index.html`. Bin rows do not get a handle.
+
+Drag uses `mousedown` / `mousemove` / `mouseup` on `document`, not HTML5 `draggable`. While dragging, the real row is `position: fixed` and follows the pointer. A dashed olive `li.todo-drag-placeholder` marks the drop slot. On mouseup, `placeholder.replaceWith(draggedItem)`, then `setSortMode("manual")` and `saveTodos()`.
+
+Sort used to undo a drag (`saveTodos` → `updateEmptyMessages` → `sortTodos`). Custom order skips that sort so the new order sticks. Picking Date added, Due date, or Priority still sorts on purpose.
 
 ## How Due Hints Work
 
@@ -248,6 +263,7 @@ After add, delete, complete, edit, bin, or closing the task editor, the app save
 - `todos` — active and completed items as `{ text, isDone, notes, dueDate, priority, tag, subtasks, createdAt }`
 - `binnedTodos` — bin items with the same shape (`isDone` remembers whether to restore to active or completed)
 - `todoTheme` — `"dark"` or `"light"`
+- `todoSort` — `"created"`, `"due"`, `"priority"`, or `"manual"`
 
 On load, both lists and the bin are rebuilt from that data. If nothing is saved, they start empty. Todos created before v1.3.0 still load; extra fields start empty until you open and close the editor once. Todos created before v1.9.0 load with tag **None**. Todos created before v1.10.0 load with no subtasks.
 
