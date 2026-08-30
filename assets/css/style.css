@@ -1291,3 +1291,67 @@ header {
     height: auto;
     background-color: #b3a589;
 }
+
+#todo-list .todo-drag-handle,
+#completed-todo-list .todo-drag-handle {
+    width: 0.85rem;
+    height: 1.2rem;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    background-image:
+        radial-gradient(circle, #8d7f60 1.15px, transparent 1.25px),
+        radial-gradient(circle, #8d7f60 1.15px, transparent 1.25px);
+    background-size: 0.38rem 0.38rem;
+    background-position: 0.05rem 0.08rem, 0.42rem 0.08rem;
+    background-repeat: repeat-y;
+    box-shadow: none;
+    cursor: grab;
+    flex-shrink: 0;
+}
+
+#todo-list .todo-drag-handle:hover,
+#completed-todo-list .todo-drag-handle:hover {
+    width: 0.85rem;
+    height: 1.2rem;
+    background-color: transparent;
+}
+
+#todo-list .todo-drag-handle:active,
+#completed-todo-list .todo-drag-handle:active {
+    cursor: grabbing;
+}
+
+[data-theme="dark"] #todo-list .todo-drag-handle,
+[data-theme="dark"] #completed-todo-list .todo-drag-handle {
+    background-image:
+        radial-gradient(circle, #d7c79e 1.15px, transparent 1.25px),
+        radial-gradient(circle, #d7c79e 1.15px, transparent 1.25px);
+    background-size: 0.38rem 0.38rem;
+    background-position: 0.05rem 0.08rem, 0.42rem 0.08rem;
+}
+
+#todo-list .todo-dragging,
+#completed-todo-list .todo-dragging {
+    position: fixed;
+    z-index: 40;
+    margin: 0;
+    pointer-events: none;
+    box-shadow: 0 10px 24px rgba(141, 127, 96, 0.4);
+    cursor: grabbing;
+}
+
+#todo-list .todo-drag-placeholder,
+#completed-todo-list .todo-drag-placeholder {
+    padding: 0;
+    box-shadow: none;
+    background-color: #e8e0d0;
+    border: 2px dashed #8d7f60;
+    box-sizing: border-box;
+}
+
+[data-theme="dark"] #todo-list .todo-drag-placeholder,
+[data-theme="dark"] #completed-todo-list .todo-drag-placeholder {
+    background-color: #3a3a3a;
+    border-color: #d7c79e;
+}

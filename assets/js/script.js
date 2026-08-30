@@ -21,6 +21,7 @@ const binConfirmCancel = document.getElementById("bin-confirm-cancel");
 const binConfirmEmpty = document.getElementById("bin-confirm-empty");
 const themeToggle = document.getElementById("theme-toggle");
 const themeStorageKey = "todoTheme";
+const sortStorageKey = "todoSort";
 const taskEditor = document.getElementById("task-editor");
 const taskEditorBackdrop = document.getElementById("task-editor-backdrop");
 const taskEditorClose = document.getElementById("task-editor-close");
@@ -86,6 +87,12 @@ function createTodoItem(text) {
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.setAttribute("aria-label", "Complete todo item");
+
+    const dragHandle = document.createElement("button");
+    dragHandle.type = "button";
+    dragHandle.className = "todo-drag-handle";
+    dragHandle.dataset.action = "drag";
+    dragHandle.setAttribute("aria-label", "Drag to reorder");
     
     const span = document.createElement("span");
     span.textContent = text;
@@ -110,8 +117,96 @@ function createTodoItem(text) {
     deleteButton.dataset.action = "bin";
     deleteButton.textContent = "X";
 
-    li.append(checkbox, span, tagChip, dueHint, detailsButton, deleteButton);
+    li.append(dragHandle, checkbox, span, tagChip, dueHint, detailsButton, deleteButton);
     return li;
+}
+
+let draggedItem = null;
+let dragPlaceholder = null;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+
+function enableRowDrag(event) {
+    const handle = event.target.closest(".todo-drag-handle");
+    if (!handle || event.button !== 0) {
+        return;
+    }
+
+    event.preventDefault();
+    draggedItem = handle.closest("li");
+    const rect = draggedItem.getBoundingClientRect();
+    dragOffsetX = event.clientX - rect.left;
+    dragOffsetY = event.clientY - rect.top;
+
+    dragPlaceholder = document.createElement("li");
+    dragPlaceholder.className = "todo-drag-placeholder";
+    dragPlaceholder.style.height = rect.height + "px";
+    draggedItem.after(dragPlaceholder);
+
+    draggedItem.classList.add("todo-dragging");
+    draggedItem.style.width = rect.width + "px";
+    draggedItem.style.left = rect.left + "px";
+    draggedItem.style.top = rect.top + "px";
+
+    document.addEventListener("mousemove", handleRowDragMove);
+    document.addEventListener("mouseup", handleRowDragStop);
+}
+
+function handleRowDragMove(event) {
+    event.preventDefault();
+    if (!draggedItem || !dragPlaceholder) {
+        return;
+    }
+
+    draggedItem.style.left = event.clientX - dragOffsetX + "px";
+    draggedItem.style.top = event.clientY - dragOffsetY + "px";
+
+    const list = dragPlaceholder.parentNode;
+    const rows = [...list.querySelectorAll(":scope > li")];
+    let marker = null;
+
+    for (let i = 0; i < rows.length; i += 1) {
+        const row = rows[i];
+        if (row === draggedItem || row === dragPlaceholder || row.hidden) {
+            continue;
+        }
+
+        const rect = row.getBoundingClientRect();
+        if (event.clientY < rect.top + rect.height / 2) {
+            marker = row;
+            break;
+        }
+    }
+
+    if (marker) {
+        if (dragPlaceholder.nextElementSibling !== marker) {
+            marker.before(dragPlaceholder);
+        }
+    } else if (list.lastElementChild !== dragPlaceholder) {
+        list.append(dragPlaceholder);
+    }
+}
+
+function handleRowDragStop() {
+    if (!draggedItem) {
+        return;
+    }
+
+    document.removeEventListener("mousemove", handleRowDragMove);
+    document.removeEventListener("mouseup", handleRowDragStop);
+
+    if (dragPlaceholder) {
+        dragPlaceholder.replaceWith(draggedItem);
+        dragPlaceholder = null;
+    }
+
+    draggedItem.classList.remove("todo-dragging");
+    draggedItem.style.width = "";
+    draggedItem.style.left = "";
+    draggedItem.style.top = "";
+    draggedItem = null;
+    setSortMode("manual");
+    saveTodos();
 }
 
 function setDueHint(li) {
@@ -396,8 +491,19 @@ function priorityRank(priority) {
     return 3;
 }
 
+function setSortMode(mode) {
+    const allowed = ["created", "due", "priority", "manual"];
+    const next = allowed.indexOf(mode) === -1 ? "created" : mode;
+    todoSort.value = next;
+    localStorage.setItem(sortStorageKey, next);
+}
+
 function sortTodoList(list) {
     const mode = todoSort.value;
+    if (mode === "manual") {
+        return;
+    }
+
     const items = [...list.querySelectorAll("li")];
 
     items.sort(function (a, b) {
@@ -650,7 +756,10 @@ taskEditorSubtasks.addEventListener("click", function (event) {
 taskEditorSubtasks.addEventListener("change", updateSubtaskProgress);
 
 todoSearchIn.addEventListener("change", filterTodos);
-todoSort.addEventListener("change", sortTodos);
+todoSort.addEventListener("change", function () {
+    setSortMode(todoSort.value);
+    sortTodos();
+});
 todoTagFilter.addEventListener("change", filterTodos);
 
 todoForm.addEventListener("submit", function (event) {
@@ -688,6 +797,9 @@ todoList.addEventListener("change", function (event) {
     completedList.append(li);
     saveTodos();
 });
+
+todoList.addEventListener("mousedown", enableRowDrag);
+completedList.addEventListener("mousedown", enableRowDrag);
 
 completedList.addEventListener("change", function (event) {
     const checkbox = event.target.closest("input[type='checkbox']");
@@ -797,5 +909,6 @@ taskEditorBackdrop.addEventListener("click", closeTaskEditor);
 
 const savedTheme = localStorage.getItem(themeStorageKey) === "dark" ? "dark" : "light";
 setTheme(savedTheme);
+setSortMode(localStorage.getItem(sortStorageKey) || "created");
 
 loadTodos();
