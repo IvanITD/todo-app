@@ -539,11 +539,18 @@ p {
     gap: 0.15rem;
 }
 
-#todo-list .todo-last-done,
-#completed-todo-list .todo-last-done {
+#todo-list .todo-captions,
+#completed-todo-list .todo-captions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+#todo-list .todo-caption,
+#completed-todo-list .todo-caption {
     flex: 0 0 auto;
     max-width: none;
-    padding:0;
+    padding: 0;
     font-size: 0.75rem;
     font-weight: 600;
     box-shadow: none;
@@ -554,6 +561,22 @@ p {
     opacity: 1;
     color: #9a5a4a;
     background: none;
+}
+
+#todo-list .todo-meta,
+#completed-todo-list .todo-meta {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.15rem;
+}
+
+#todo-list .todo-meta-chips,
+#completed-todo-list .todo-meta-chips {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
 }
 
 #todo-list .todo-tag.work,
@@ -1038,8 +1061,8 @@ header {
     border-color: #4a4a4a;
 }
 
-[data-theme="dark"] #todo-list .todo-last-done,
-[data-theme="dark"] #completed-todo-list .todo-last-done {
+[data-theme="dark"] #todo-list .todo-caption,
+[data-theme="dark"] #completed-todo-list .todo-caption {
     background-color: transparent;
     color: #d4a08c;
     box-shadow: none;
@@ -1170,7 +1193,8 @@ header {
     color: #8d7f60;
 }
 
-#task-editor-panel label {
+#task-editor-panel label,
+#task-editor-remind-heading {
     display: block;
     margin-top: 0.75rem;
     margin-bottom: 0.25rem;
@@ -1242,6 +1266,44 @@ header {
 
 [data-theme="dark"] .task-editor-repeat-day[aria-pressed="true"],
 [data-theme="dark"] #task-editor-repeat-fortnight[aria-pressed="true"] {
+    background-color: #d7c79e;
+    color: #2b2b2b;
+}
+
+#task-editor-remind {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
+}
+
+.task-editor-remind-option {
+    height: 1.75rem;
+    padding: 0 0.55rem;
+    border: 2px solid #8d7f60;
+    border-radius: 0.4rem;
+    background-color: transparent;
+    color: #8d7f60;
+    font-size: 0.7rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    opacity: 0.4;
+}
+
+.task-editor-remind-option[aria-pressed="true"] {
+    opacity: 1;
+    background-color: #8d7f60;
+    color: #fff;
+}
+
+[data-theme="dark"] .task-editor-remind-option {
+    border-color: #d7c79e;
+    color: #d7c79e;
+}
+
+[data-theme="dark"] .task-editor-remind-option[aria-pressed="true"] {
     background-color: #d7c79e;
     color: #2b2b2b;
 }
@@ -1419,6 +1481,7 @@ header {
 
 [data-theme="dark"] #task-editor-heading,
 [data-theme="dark"] #task-editor-panel label,
+[data-theme="dark"] #task-editor-remind-heading,
 [data-theme="dark"] #task-editor-created-wrap {
     color: #d7c79e;
 }

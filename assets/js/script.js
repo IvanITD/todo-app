@@ -35,6 +35,7 @@ const taskEditorTag = document.getElementById("task-editor-tag");
 const taskEditorRepeat = document.getElementById("task-editor-repeat");
 const taskEditorRepeatFortnight = document.getElementById("task-editor-repeat-fortnight");
 const taskEditorRepeatDays = document.getElementById("task-editor-repeat-days");
+const taskEditorRemind = document.getElementById("task-editor-remind");
 const taskEditorSubtasks = document.getElementById("task-editor-subtasks");
 const taskEditorSubtaskInput = document.getElementById("task-editor-subtask-input");
 const taskEditorSubtaskAdd = document.getElementById("task-editor-subtask-add");
@@ -74,6 +75,7 @@ function getTodoDetails(li) {
         tag: li.dataset.tag || "none",
         repeat: li.dataset.repeat || "none",
         repeatDays: readRepeatDays(li),
+        remind: li.dataset.remind || "off",
         subtasks: readSubtasks(li),
         createdAt: li.dataset.createdAt || ""
     };
@@ -87,12 +89,14 @@ function applyTodoDetails(li, details) {
     li.dataset.priority = details.priority || "none";
     li.dataset.tag = details.tag || "none";
     li.dataset.repeat = details.repeat || "none";
+    li.dataset.remind = details.remind || "off";
     writeRepeatDays(li, details.repeatDays || []);
     writeSubtasks(li, details.subtasks || []);
     li.dataset.createdAt = details.createdAt || "";
     setDueHint(li);
     setTagChip(li);
     setLastDone(li);
+    setRemindCaption(li);
 }
 
 function createTodoItem(text) {
@@ -113,11 +117,15 @@ function createTodoItem(text) {
     const span = document.createElement("span");
     span.textContent = text;
 
-    const lastDone = document.createElement("span");
-    lastDone.className = "todo-last-done";
-    lastDone.hidden = true;
+    const caption = document.createElement("span");
+    caption.className = "todo-caption";
+    caption.hidden = true;
 
-    textWrap.append(span, lastDone);
+    const captions = document.createElement("div");
+    captions.className = "todo-captions";
+    captions.append(caption);
+
+    textWrap.append(span, captions);
 
     const dueHint = document.createElement("span");
     dueHint.className = "todo-due-hint";
@@ -126,6 +134,14 @@ function createTodoItem(text) {
     const tagChip = document.createElement("span");
     tagChip.className = "todo-tag";
     tagChip.hidden = true;
+
+    const chips = document.createElement("div");
+    chips.className = "todo-meta-chips";
+    chips.append(tagChip, dueHint);
+
+    const meta = document.createElement("div");
+    meta.className = "todo-meta";
+    meta.append(chips);
 
     const detailsButton = document.createElement("button");
     detailsButton.type = "button";
@@ -139,7 +155,7 @@ function createTodoItem(text) {
     deleteButton.dataset.action = "bin";
     deleteButton.textContent = "X";
 
-    li.append(dragHandle, checkbox, textWrap, tagChip, dueHint, detailsButton, deleteButton);
+    li.append(dragHandle, checkbox, textWrap, meta, detailsButton, deleteButton);
     return li;
 }
 
@@ -300,22 +316,131 @@ function formatLastDone(iso) {
     return "Last done " + date.getDate() + " " + months[date.getMonth()];
 }
 
-function setLastDone(li) {
-    const lastDone = li.querySelector(".todo-last-done");
-    if (!lastDone) {
-        return;
-    }
-
+function lastDoneCaption(li) {
     const repeat = li.dataset.repeat || "none";
     const completed = li.dataset.lastCompleted || "";
     if (repeat === "none" || completed === "") {
-        lastDone.textContent = "";
-        lastDone.hidden = true;
+        return "";
+    }
+    return formatLastDone(completed);
+}
+
+function setRowCaption(li) {
+    const line = li.querySelector(".todo-caption");
+    if (!line) {
         return;
     }
 
-    lastDone.textContent = formatLastDone(completed);
-    lastDone.hidden = false;
+    const parts = [];
+    const remind = remindCaption(li.dataset.remind || "off");
+    const lastDone = lastDoneCaption(li);
+    if (remind !== "") {
+        parts.push(remind);
+    }
+    if (lastDone !== "") {
+        parts.push(lastDone);
+    }
+
+    if (parts.length === 0) {
+        line.textContent = "";
+        line.hidden = true;
+        return;
+    }
+
+    line.textContent = parts.join(" • ");
+    line.hidden = false;
+}
+
+function setLastDone(li) {
+    setRowCaption(li);
+}
+
+function remindCaption(remind) {
+    if (remind === "ontime") {
+        return "Due today";
+    }
+    if (remind === "15m") {
+        return "In 15m";
+    }
+    if (remind === "30m") {
+        return "In 30m";
+    }
+    if (remind === "1h") {
+        return "In 1h";
+    }
+    if (remind === "1d") {
+        return "In 1d";
+    }
+    return "";
+}
+
+function setRemindCaption(li) {
+    setRowCaption(li);
+}
+
+const remindedKeys = new Set();
+
+function remindToastMessage(remind) {
+    if (remind === "15m") {
+        return "due in 15 minutes";
+    }
+    if (remind === "30m") {
+        return "due in 30 minutes";
+    }
+    if (remind === "1h") {
+        return "due in 1 hour";
+    }
+    if (remind === "1d") {
+        return "due in 1 day";
+    }
+    if (remind === "ontime") {
+        return "due today";
+    }
+    return "";
+}
+
+function remindIsDue(li) {
+    const remind = li.dataset.remind || "off";
+    const due = li.dataset.dueDate || "";
+    if (remind === "off" || due === "") {
+        return false;
+    }
+
+    const dueDate = dateFromIso(due);
+    const now = new Date();
+
+    if (remind === "ontime") {
+        return now >= dueDate;
+    }
+    if (remind === "1d") {
+        return now >= addDays(dueDate, -1);
+    }
+    if (remind === "1h") {
+        return now >= new Date(dueDate.getTime() - 60 * 60 * 1000);
+    }
+    if (remind === "30m") {
+        return now >= new Date(dueDate.getTime() - 30 * 60 * 1000);
+    }
+    if (remind === "15m") {
+        return now >= new Date(dueDate.getTime() - 15 * 60 * 1000);
+    }
+    return false;
+}
+
+function checkReminders() {
+    [...todoList.querySelectorAll("li")].forEach(function (li) {
+        if (!remindIsDue(li)) {
+            return;
+        }
+
+        const key = ensureTodoId(li) + "|" + li.dataset.dueDate + "|" + li.dataset.remind;
+        if (remindedKeys.has(key)) {
+            return;
+        }
+
+        remindedKeys.add(key);
+        showTodoMessage(li, remindToastMessage(li.dataset.remind));
+    });
 }
 
 function showToast(message) {
@@ -530,6 +655,18 @@ function setFortnightPressed(isOn) {
     taskEditorRepeatFortnight.setAttribute("aria-pressed", isOn ? "true" : "false");
 }
 
+function readEditorRemind() {
+    const pressed = taskEditorRemind.querySelector('.task-editor-remind-option[aria-pressed="true"]');
+    return pressed ? pressed.dataset.remind : "off";
+}
+
+function writeEditorRemind(value) {
+    const remind = value || "off";
+    taskEditorRemind.querySelectorAll(".task-editor-remind-option").forEach(function (option) {
+        option.setAttribute("aria-pressed", option.dataset.remind === remind ? "true" : "false");
+    });
+}
+
 function weekdayFromDueDate(dueDate) {
     if (!dueDate) {
         return "";
@@ -665,6 +802,7 @@ function saveTodos() {
             tag: li.dataset.tag || "none",
             repeat: li.dataset.repeat || "none",
             repeatDays: readRepeatDays(li),
+            remind: li.dataset.remind || "off",
             subtasks: readSubtasks(li),
             createdAt: li.dataset.createdAt || ""
         };
@@ -682,6 +820,7 @@ function saveTodos() {
             tag: li.dataset.tag || "none",
             repeat: li.dataset.repeat || "none",
             repeatDays: readRepeatDays(li),
+            remind: li.dataset.remind || "off",
             subtasks: readSubtasks(li),
             createdAt: li.dataset.createdAt || ""
         };
@@ -702,6 +841,7 @@ function saveTodos() {
             tag: li.dataset.tag || "none",
             repeat: li.dataset.repeat || "none",
             repeatDays: readRepeatDays(li),
+            remind: li.dataset.remind || "off",
             subtasks: readSubtasks(li),
             createdAt: li.dataset.createdAt || ""
         };
@@ -711,6 +851,7 @@ function saveTodos() {
         saveCustomOrder();
     }
     updateEmptyMessages();
+    checkReminders();
 }
 
 function updateEmptyMessages() {
@@ -937,7 +1078,7 @@ function handleListDblClick(event) {
         return;
     }
 
-    if (span.classList.contains("todo-due-hint") || span.classList.contains("todo-tag") || span.classList.contains("todo-last-done")) {
+    if (span.classList.contains("todo-due-hint") || span.classList.contains("todo-tag") || span.classList.contains("todo-caption")) {
         return;
     }
 
@@ -1042,6 +1183,7 @@ function openTaskEditor(li) {
     } else {
         applyRepeatFromDropdown();
     }
+    writeEditorRemind(li.dataset.remind || "off");
     fillEditorSubtasks(readSubtasks(li));
     taskEditorCreated.textContent = li.dataset.createdAt || "-";
     taskEditorDone.checked = li.querySelector("input[type='checkbox']").checked;
@@ -1063,6 +1205,7 @@ function closeTaskEditor() {
             tag: taskEditorTag.value,
             repeat: taskEditorRepeat.value,
             repeatDays: collectEditorRepeatDays(),
+            remind: readEditorRemind(),
             subtasks: collectEditorSubtasks(),
             createdAt: editorItem.dataset.createdAt || todayDate()
         });
@@ -1176,6 +1319,17 @@ taskEditorRepeatFortnight.addEventListener("click", function () {
     }
     taskEditorRepeat.value = "fortnight";
     applyRepeatFromDropdown();
+});
+
+taskEditorRemind.addEventListener("click", function (event) {
+    const button = event.target.closest(".task-editor-remind-option");
+    if (!button) {
+        return;
+    }
+
+    taskEditorRemind.querySelectorAll(".task-editor-remind-option").forEach(function (option) {
+        option.setAttribute("aria-pressed", option === button ? "true" : "false");
+    });
 });
 
 todoSearchIn.addEventListener("change", filterTodos);
@@ -1366,6 +1520,10 @@ const savedTheme = localStorage.getItem(themeStorageKey) === "dark" ? "dark" : "
 setTheme(savedTheme);
 setSortMode(localStorage.getItem(sortStorageKey) || "created");
 loadTodos();
+
 if (todoSort.value === "manual") {
     applyCustomOrder();
 }
+
+checkReminders();
+window.setInterval(checkReminders, 60000);

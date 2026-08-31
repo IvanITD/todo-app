@@ -135,7 +135,15 @@
                     <button type="button" class="task-editor-repeat-day" data-day="sun" aria-label="Sunday" aria-pressed="false">S</button>
                     <button type="button" id="task-editor-repeat-fortnight" aria-label="Every two weeks" aria-pressed="false">×2</button>
                 </div>
-
+                <p id="task-editor-remind-heading">Remind</p>
+                <div id="task-editor-remind" role="group" aria-labelledby="task-editor-remind-heading">
+                    <button type="button" class="task-editor-remind-option" data-remind="off" aria-pressed="true">Off</button>
+                    <button type="button" class="task-editor-remind-option" data-remind="ontime" aria-pressed="false">Due today</button>
+                    <button type="button" class="task-editor-remind-option" data-remind="15m" aria-pressed="false">15m</button>
+                    <button type="button" class="task-editor-remind-option" data-remind="30m" aria-pressed="false">30m</button>
+                    <button type="button" class="task-editor-remind-option" data-remind="1h" aria-pressed="false">1h</button>
+                    <button type="button" class="task-editor-remind-option" data-remind="1d" aria-pressed="false">1d</button>
+                </div>
                 <label for="task-editor-priority">Priority</label>
                 <select id="task-editor-priority">
                     <option value="none">None</option>
