@@ -334,6 +334,25 @@ p {
     opacity: 0.5;
 }
 
+#todo-list li.todo-completing {
+    max-height: 6rem;
+    overflow: hidden;
+    pointer-events: none;
+    animation: todo-collapse 0.3s ease forwards;
+}
+
+@keyframes todo-collapse {
+    to {
+        opacity: 0;
+        max-height: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin: 0;
+        border-top-width: 0;
+        box-shadow: none;
+    }
+}
+
 #todo-list li input[type="checkbox"]:checked {
     background-color: #8d7f60;
     border-color: #8d7f60;
@@ -476,8 +495,6 @@ p {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     padding: 0.5rem 1rem;
     border-radius: 8px;
-    margin-left: auto;
-    margin-right: auto;
     max-width: 500px;
     text-decoration: line-through;
     color: #8d7f60;
@@ -1127,6 +1144,10 @@ header {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
+#task-editor-panel > * {
+    flex-shrink: 0;
+}
+
 #task-editor-close {
     align-self: flex-end;
     border: none;
@@ -1171,6 +1192,11 @@ header {
     font-family: inherit;
 }
 
+#task-editor-notes {
+    min-height: 7.5rem;
+    resize: vertical;
+}
+
 #task-editor-repeat-days {
     display: flex;
     align-items: center;
@@ -1197,6 +1223,8 @@ header {
 #task-editor-repeat-fortnight {
     width: 2.1rem;
     border-radius: 0.9rem;
+    border-radius: 0.4rem;
+    border-style: dashed;
 }
 
 .task-editor-repeat-day[aria-pressed="true"],
@@ -1284,6 +1312,10 @@ header {
 #task-editor-subtasks li input[type="checkbox"]:checked {
     background-color: #8d7f60;
     border-color: #8d7f60;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><path fill="%23fff" d="M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z"/></svg>');
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 #task-editor-subtasks li span {
@@ -1306,6 +1338,11 @@ header {
     height: 1.1rem;
     flex-shrink: 0;
     font-size: 0.75rem;
+}
+
+#task-editor-subtasks li button:hover {
+    background-color: #8f4b4b;
+    color: #fff;
 }
 
 #task-editor-subtask-input {

@@ -23,6 +23,7 @@ const binConfirmEmpty = document.getElementById("bin-confirm-empty");
 const themeToggle = document.getElementById("theme-toggle");
 const themeStorageKey = "todoTheme";
 const sortStorageKey = "todoSort";
+const customOrderStorageKey = "todoCustomOrder";
 const taskEditor = document.getElementById("task-editor");
 const taskEditorBackdrop = document.getElementById("task-editor-backdrop");
 const taskEditorClose = document.getElementById("task-editor-close");
@@ -65,6 +66,7 @@ function tomorrowDate() {
 
 function getTodoDetails(li) {
     return {
+        id: ensureTodoId(li),
         notes: li.dataset.notes || "",
         dueDate: li.dataset.dueDate || "",
         lastCompleted: li.dataset.lastCompleted || "",
@@ -78,6 +80,7 @@ function getTodoDetails(li) {
 }
 
 function applyTodoDetails(li, details) {
+    li.dataset.id =details.id || li.dataset.id || newTodoId();
     li.dataset.notes = details.notes || "";
     li.dataset.dueDate = details.dueDate || "";
     li.dataset.lastCompleted = details.lastCompleted || "";
@@ -652,6 +655,7 @@ function createBinnedItem(text, isDone, details) {
 function saveTodos() {
     const activeTodos = [...todoList.querySelectorAll("li")].map(function (li) {
         return {
+            id: ensureTodoId(li),
             text: li.querySelector("span").textContent,
             isDone: false,
             notes: li.dataset.notes || "",
@@ -668,6 +672,7 @@ function saveTodos() {
 
     const completedTodos = [...completedList.querySelectorAll("li")].map(function (li) {
         return {
+            id: ensureTodoId(li),
             text: li.querySelector("span").textContent,
             isDone: true,
             notes: li.dataset.notes || "",
@@ -687,6 +692,7 @@ function saveTodos() {
 
     const binnedTodos = [...binList.querySelectorAll("li")].map(function (li) {
         return {
+            id: ensureTodoId(li),
             text: li.querySelector("span").textContent,
             isDone: li.dataset.isDone === "true",
             notes: li.dataset.notes || "",
@@ -701,6 +707,9 @@ function saveTodos() {
         };
     });
     localStorage.setItem("binnedTodos", JSON.stringify(binnedTodos));
+    if (todoSort.value === "manual") {
+        saveCustomOrder();
+    }
     updateEmptyMessages();
 }
 
@@ -788,6 +797,64 @@ function priorityRank(priority) {
     return 3;
 }
 
+function newTodoId() {
+    return Date.now() + "-" + Math.random().toString(16).slice(2);
+}
+
+function ensureTodoId(li) {
+    if (!li.dataset.id) {
+        li.dataset.id = newTodoId();
+    }
+    return li.dataset.id;
+}
+
+function saveCustomOrder() {
+    const order = {
+        active: [...todoList.querySelectorAll("li")].map(ensureTodoId),
+        completed: [...completedList.querySelectorAll("li")].map(ensureTodoId)
+    };
+    localStorage.setItem(customOrderStorageKey, JSON.stringify(order));
+}
+
+function applyCustomOrderToList(list, ids) {
+    const rows = [...list.querySelectorAll("li")];
+    const byId = {};
+
+    rows.forEach(function (li) {
+        byId[ensureTodoId(li)] = li;
+    });
+
+    ids.forEach(function (id) {
+        if (byId[id]) {
+            list.append(byId[id]);
+            delete byId[id];
+        }
+    });
+
+    rows.forEach(function (li) {
+        if (byId[li.dataset.id]) {
+            list.append(li);
+        }
+    });
+}
+
+function applyCustomOrder() {
+    const saved = localStorage.getItem(customOrderStorageKey);
+    if (!saved) {
+        return;
+    }
+
+    let order;
+    try {
+        order = JSON.parse(saved);
+    } catch (error) {
+        return;
+    }
+
+    applyCustomOrderToList(todoList, order.active || []);
+    applyCustomOrderToList(completedList, order.completed || []);
+}
+
 function setSortMode(mode) {
     const allowed = ["created", "due", "priority", "manual"];
     const next = allowed.indexOf(mode) === -1 ? "created" : mode;
@@ -798,6 +865,10 @@ function setSortMode(mode) {
 function sortTodoList(list) {
     const mode = todoSort.value;
     if (mode === "manual") {
+        return;
+    }
+
+    if (list.querySelector(".todo-completing")) {
         return;
     }
 
@@ -1005,8 +1076,7 @@ function closeTaskEditor() {
                 checkbox.checked = false;
                 taskEditorDone.checked = false;
             } else {
-                checkbox.checked = true;
-                completedList.append(editorItem);
+                finishActiveComplete(editorItem);
             }
         } else if (!shouldBeDone && checkbox.checked) {
             checkbox.checked = false;
@@ -1056,6 +1126,15 @@ taskEditorSubtaskAdd.addEventListener("click", function () {
     taskEditorSubtaskInput.focus();
 });
 
+taskEditorSubtaskInput.addEventListener("keydown", function (event) {
+    if (event.key !== "Enter") {
+        return;
+    }
+
+    event.preventDefault();
+    taskEditorSubtaskAdd.click();
+})
+
 taskEditorSubtasks.addEventListener("click", function (event) {
     const button = event.target.closest("button");
     if (!button) {
@@ -1101,7 +1180,15 @@ taskEditorRepeatFortnight.addEventListener("click", function () {
 
 todoSearchIn.addEventListener("change", filterTodos);
 todoSort.addEventListener("change", function () {
-    setSortMode(todoSort.value);
+    const previous = localStorage.getItem(sortStorageKey) || "created";
+    const next = todoSort.value;
+    if (previous === "manual" && next !== "manual") {
+        saveCustomOrder();
+    }
+    setSortMode(next);
+    if (next === "manual") {
+        applyCustomOrder();
+    }
     sortTodos();
 });
 todoTagFilter.addEventListener("change", filterTodos);
@@ -1133,6 +1220,22 @@ todoForm.addEventListener("submit", function (event) {
     todoInput.focus();
 });
 
+function finishActiveComplete(li) {
+    if (li.classList.contains("todo-completing")) {
+        return;
+    }
+
+    const checkbox = li.querySelector("input[type='checkbox']");
+    checkbox.checked = true;
+    li.classList.add("todo-completing");
+
+    window.setTimeout(function () {
+        li.classList.remove("todo-completing");
+        completedList.append(li);
+        saveTodos();
+    }, 300);
+}
+
 todoList.addEventListener("change", function (event) {
     const checkbox = event.target.closest("input[type='checkbox']");
     if (!checkbox) {
@@ -1147,9 +1250,7 @@ todoList.addEventListener("change", function (event) {
         return;
     }
 
-    checkbox.checked = true;
-    completedList.append(li);
-    saveTodos();
+    finishActiveComplete(li);
 });
 
 todoList.addEventListener("mousedown", enableRowDrag);
@@ -1264,5 +1365,7 @@ taskEditorBackdrop.addEventListener("click", closeTaskEditor);
 const savedTheme = localStorage.getItem(themeStorageKey) === "dark" ? "dark" : "light";
 setTheme(savedTheme);
 setSortMode(localStorage.getItem(sortStorageKey) || "created");
-
 loadTodos();
+if (todoSort.value === "manual") {
+    applyCustomOrder();
+}
