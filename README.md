@@ -3,7 +3,7 @@
 A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or backend — todos are saved in the browser with `localStorage`.
 
 **Live demo:** [https://ivanitd.github.io/todo-app/](https://ivanitd.github.io/todo-app/)  
-**Version:** 1.12.1  
+**Version:** 1.13.0  
 **Author:** Ivan Ivanov  
 **License:** [MIT](LICENSE)
 
@@ -17,9 +17,10 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 - Check an item to move it to the completed list
 - Uncheck a completed item to move it back
 - Double-click todo text to edit (Enter or click away to save, Escape to cancel)
-- **☰** opens a task editor overlay (name, notes, due date, repeat, priority, tag, subtasks, created date, completed)
+- **☰** opens a task editor overlay (name, notes, due date, repeat, remind, priority, tag, subtasks, created date, completed)
+- Remind in ☰: **Off**, **Due today**, **15m**, **30m**, **1h**, or **1d** (one pill at a time). Needs a due date. While the tab is open, a toast fires when that offset from the start of the due day is reached
 - Repeat in ☰: None, Daily, Weekly (Mon–Fri), Weekend, Fortnight (all days + **×2**), Monthly, or Custom. Seven day circles stay visible; the dropdown fills them, and clicking a circle can set Custom
-- Checking off a repeating task keeps it Active, moves the due date forward, and writes **Last done** under the name. Too early shows a toast at the top instead of changing the date
+- Checking off a repeating task keeps it Active, moves the due date forward, and writes **Last done** under the name. A reminder caption can sit on the same line (`In 15m • Last done 31 Aug`). Too early shows a toast at the top instead of changing the date
 - Subtasks in ☰: checklist with a count (`2 of 3`), progress bar, and a left olive rail (saved on the task). Enter adds a subtask; the circle shows a tick when checked
 - Due-soon chips on the row: **Overdue**, **Today**, **Tomorrow** (set the date in ☰; later dates stay quiet)
 - Tag chips on the row: **Work**, **Home**, **Personal** (set in ☰; None hides the chip)
@@ -44,7 +45,7 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 2. Use **Search todos** to show only names that match (live as you type). Use **Search in** for **All lists**, **Active**, **Completed**, or **Bin**. Searching Completed or Bin (or All, when those lists have a match) opens that section. Click the **×** in the search box (or clear the text) to see the full list again.
 3. Use the sort menu for **Date added**, **Due date**, **Priority**, or **Custom order** (set due date and priority in **☰**). Use **Tag** to show All tags, or only Work, Home, or Personal.
 4. Drag the 6-dot grip on the left of a row to change the order. That sets Sort to **Custom order**. Date added / Due date / Priority still sort live; picking **Custom order** again brings back the last drag layout. Check the circle to complete a normal task — the row collapses, then appears under **Show Completed Todos**. **Move all to Bin** sends every completed item to the Bin.
-5. Double-click the text to rename a task, or click **☰** for the full editor (notes, due date, repeat, priority, tag, subtasks, and more). Close or click the dim backdrop to save. **Overdue**, **Today**, or **Tomorrow** appears on the row when the due date needs attention. **Work**, **Home**, or **Personal** appears when a tag is set. Subtasks stay in ☰ (count and bar update as you check them; Enter adds a subtask). A repeating task stays in Active when you check it off; **Last done** appears under the name. A toast at the top confirms the next due date, or says it is too early.
+5. Double-click the text to rename a task, or click **☰** for the full editor (notes, due date, repeat, remind, priority, tag, subtasks, and more). Close or click the dim backdrop to save. **Overdue**, **Today**, or **Tomorrow** appears on the row when the due date needs attention. **Work**, **Home**, or **Personal** appears when a tag is set. Subtasks stay in ☰ (count and bar update as you check them; Enter adds a subtask). Set **Remind** after Repeat (needs a due date). A quiet line under the name shows **Due today** / **In 15m** (and **Last done** on the same line, separated by **•**). A toast at the top fires when a reminder is due, or confirms the next repeat date.
 6. Click **X** to move one task to the **Bin**.
 7. Open **Bin** to restore a task, restore all, delete one forever, or empty the bin.
 8. Click the sun / moon switch in the header to change theme.
@@ -126,6 +127,10 @@ Screenshots of the real HTML and CSS at each **main** release live in a closed s
 <strong>v1.12.0</strong><br>Recurring<br>
 <img src="assets/screenshots/v1.12.0.png" width="200" alt="v1.12.0 Recurring">
 </td>
+<td align="center" valign="top">
+<strong>v1.13.0</strong><br>Reminders<br>
+<img src="assets/screenshots/v1.13.0.png" width="200" alt="v1.13.0 Reminders">
+</td>
 </tr>
 </table>
 
@@ -182,6 +187,7 @@ The app was built in phases — structure and styling first, then behavior, then
 | **Phase 16** | Drag to reorder — left grip, custom order | Done |
 | **Phase 17** | Recurring tasks — Repeat in ☰, weekday circles, Last done | Done |
 | **v1.12.1** | Custom order restore, collapse on complete, editor polish | Done |
+| **Phase 18** | Reminders — pills in ☰, row caption, toast | Done |
 
 ## How the Completed Toggle Works
 
@@ -248,13 +254,23 @@ Sort used to undo a drag (`saveTodos` → `updateEmptyMessages` → `sortTodos`)
 
 ## How Recurring Works
 
-Repeat lives in ☰, after Due date and before Priority (`#task-editor-repeat` plus `#task-editor-repeat-days`). The seven day buttons and **×2** stay on screen. The dropdown fills the circles; clicking a circle updates Repeat when the days match a preset (Mon–Fri → Weekly, Sat+Sun → Weekend, all seven → Daily, all seven + ×2 → Fortnight). Monthly still uses the due date’s weekday as a hint.
+Repeat lives in ☰, after Due date and before Remind (`#task-editor-repeat` plus `#task-editor-repeat-days`). The seven day buttons and **×2** stay on screen. The dropdown fills the circles; clicking a circle updates Repeat when the days match a preset (Mon–Fri → Weekly, Sat+Sun → Weekend, all seven → Daily, all seven + ×2 → Fortnight). Monthly still uses the due date’s weekday as a hint.
 
 There is no extra `localStorage` key. `repeat`, `repeatDays`, and `lastCompleted` sit on each todo next to `tag`. `readRepeatDays` / `writeRepeatDays` store the day list as JSON, like subtasks.
 
-Checking off a repeating task runs `tryCompleteRepeatingTodo`. If the due date is still in the future, the checkbox snaps back and `showToast` shows a message at the top. If it is due today, overdue, or has no date, the due date moves forward, `lastCompleted` becomes today, and **Last done** appears under the name (`.todo-last-done` in `.todo-text`). The row stays in Active. Repeat **None** still goes to Completed: the row collapses (`.todo-completing`, about 300ms), then moves. **×2** is a dashed pill, slightly apart from the weekday circles.
+Checking off a repeating task runs `tryCompleteRepeatingTodo`. If the due date is still in the future, the checkbox snaps back and `showToast` shows a message at the top. If it is due today, overdue, or has no date, the due date moves forward, `lastCompleted` becomes today, and **Last done** appears under the name (`.todo-caption` in `.todo-text`). The row stays in Active. Repeat **None** still goes to Completed: the row collapses (`.todo-completing`, about 300ms), then moves. **×2** is a dashed pill, slightly apart from the weekday circles.
 
 `showToast` is the shared top-of-page message (slide in, then slide up). Repeat uses `showTodoMessage` so the toast includes the task name.
+
+## How Reminders Work
+
+Remind lives in ☰ after the Repeat day row and before Priority (`#task-editor-remind-heading` plus `#task-editor-remind`). Six `type="button"` pills: **Off**, **Due today**, **15m**, **30m**, **1h**, **1d**. Class `task-editor-remind-option`, `data-remind` values `off` / `ontime` / `15m` / `30m` / `1h` / `1d`. Only one is `aria-pressed="true"` at a time (`readEditorRemind` / `writeEditorRemind`).
+
+There is no extra `localStorage` key. `remind` sits on each todo next to `repeat`. Old todos load as **Off**. A reminder without a due date never fires.
+
+Due is a **day**, treated as midnight at the start of that date (`dateFromIso`). **Due today** (`ontime`) fires from that midnight. **1h** / **30m** / **15m** subtract that duration. **1d** is midnight the day before (`addDays(due, -1)`). `checkReminders` runs after `loadTodos`, at the end of `saveTodos`, and every 60s. It only looks at `#todo-list`. `remindedKeys` (in memory) stops the same task + due + pill toasting every minute.
+
+The row caption is one span (`.todo-caption` inside `.todo-captions`). `setRowCaption` joins remind text and Last done with ` • ` (`In 15m • Last done 31 Aug`). Work / Overdue stay chips on the name line. Double-click skips `.todo-caption`.
 
 ## How Due Hints Work
 
@@ -283,13 +299,13 @@ Search and Tag both have to match. When **Search in** skips a list, Tag still ap
 
 After add, delete, complete, edit, bin, or closing the task editor, the app saves:
 
-- `todos` — active and completed items as `{ id, text, isDone, notes, dueDate, lastCompleted, priority, tag, repeat, repeatDays, subtasks, createdAt }`
+- `todos` — active and completed items as `{ id, text, isDone, notes, dueDate, lastCompleted, priority, tag, repeat, repeatDays, remind, subtasks, createdAt }`
 - `binnedTodos` — bin items with the same shape (`isDone` remembers whether to restore to active or completed)
 - `todoTheme` — `"dark"` or `"light"`
 - `todoSort` — `"created"`, `"due"`, `"priority"`, or `"manual"`
 - `todoCustomOrder` — `{ active, completed }` arrays of task `id`s (last Custom layout)
 
-On load, both lists and the bin are rebuilt from that data. If nothing is saved, they start empty. Todos created before v1.3.0 still load; extra fields start empty until you open and close the editor once. Todos created before v1.9.0 load with tag **None**. Todos created before v1.10.0 load with no subtasks. Todos created before v1.12.0 load with Repeat **None** and no last-done date. Todos created before v1.12.1 get an `id` on load.
+On load, both lists and the bin are rebuilt from that data. If nothing is saved, they start empty. Todos created before v1.3.0 still load; extra fields start empty until you open and close the editor once. Todos created before v1.9.0 load with tag **None**. Todos created before v1.10.0 load with no subtasks. Todos created before v1.12.0 load with Repeat **None** and no last-done date. Todos created before v1.12.1 get an `id` on load. Todos created before v1.13.0 load with Remind **Off**.
 
 ## License
 
