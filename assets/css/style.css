@@ -1574,6 +1574,17 @@ header {
     background-position: 0.05rem 0.08rem, 0.42rem 0.08rem;
 }
 
+#todo-list .todo-drag-handle:focus-visible,
+#completed-todo-list .todo-drag-handle:focus-visible {
+    outline: 2px solid #8d7f60;
+    outline-offset: 2px;
+}
+
+[data-theme="dark"] #todo-list .todo-drag-handle:focus-visible,
+[data-theme="dark"] #completed-todo-list .todo-drag-handle:focus-visible {
+    outline-color: #d7c79e;
+}
+
 #todo-list .todo-dragging,
 #completed-todo-list .todo-dragging {
     position: fixed;

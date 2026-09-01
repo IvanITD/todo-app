@@ -110,8 +110,8 @@ function createTodoItem(text) {
     dragHandle.type = "button";
     dragHandle.className = "todo-drag-handle";
     dragHandle.dataset.action = "drag";
-    dragHandle.setAttribute("aria-label", "Drag to reorder");
-    
+    dragHandle.setAttribute("aria-label", "Reorder task");
+    dragHandle.setAttribute("aria-grabbed", "false");
     const textWrap = document.createElement("div");
     textWrap.className = "todo-text";
     const span = document.createElement("span");
@@ -163,10 +163,10 @@ let draggedItem = null;
 let dragPlaceholder = null;
 let dragOffsetX = 0;
 let dragOffsetY = 0;
-
+let keyboardMoving = false;
 function enableRowDrag(event) {
     const handle = event.target.closest(".todo-drag-handle");
-    if (!handle || event.button !== 0) {
+    if (!handle || event.button !== 0 || keyboardMoving) {
         return;
     }
 
@@ -245,6 +245,131 @@ function handleRowDragStop() {
     draggedItem = null;
     setSortMode("manual");
     saveTodos();
+}
+
+function startKeyboardRowMove(handle) {
+    if (keyboardMoving || draggedItem) {
+        return;
+    }
+
+    const li = handle.closest("li");
+    const rect = li.getBoundingClientRect();
+
+    draggedItem = li;
+    keyboardMoving = true;
+
+    dragPlaceholder = document.createElement("li");
+    dragPlaceholder.className = "todo-drag-placeholder";
+    dragPlaceholder.style.height = rect.height + "px";
+    li.after(dragPlaceholder);
+
+    li.classList.add("todo-dragging");
+    li.style.width = rect.width + "px";
+    li.style.left = rect.left + "px";
+    li.style.top = rect.top + "px";
+    handle.setAttribute("aria-grabbed", "true");
+}
+
+function stopKeyboardRowMove(shouldSave) {
+    if (!keyboardMoving || !draggedItem) {
+        return;
+    }
+
+    const handle = draggedItem.querySelector(".todo-drag-handle");
+
+    if (shouldSave && dragPlaceholder) {
+        dragPlaceholder.replaceWith(draggedItem);
+        dragPlaceholder = null;
+        setSortMode("manual");
+        saveTodos();
+    } else if (dragPlaceholder) {
+        dragPlaceholder.remove();
+        dragPlaceholder = null;
+    }
+
+    draggedItem.classList.remove("todo-dragging");
+    draggedItem.style.width = "";
+    draggedItem.style.left = "";
+    draggedItem.style.top = "";
+    draggedItem = null;
+    keyboardMoving = false;
+
+    if (handle) {
+        handle.setAttribute("aria-grabbed", "false");
+        handle.focus();
+    }
+}
+
+function moveKeyboardRow(direction) {
+    if (!keyboardMoving || !draggedItem || !dragPlaceholder) {
+        return;
+    }
+
+    let target;
+    if (direction < 0) {
+        target = dragPlaceholder.previousElementSibling;
+        while (target && (target === draggedItem || target.hidden)) {
+            target = target.previousElementSibling;
+        }
+        if (target) {
+            target.before(dragPlaceholder);
+        }
+    } else {
+        target = dragPlaceholder.nextElementSibling;
+        while (target && (target === draggedItem || target.hidden)) {
+            target = target.nextElementSibling;
+        }
+        if (target) {
+            target.after(dragPlaceholder);
+        }
+    }
+
+    const rect = dragPlaceholder.getBoundingClientRect();
+    draggedItem.style.top = rect.top + "px";
+    draggedItem.style.left = rect.left + "px";
+}
+
+function handleGripKeyDown(event) {
+    const handle = event.target.closest(".todo-drag-handle");
+    if (!handle) {
+        return;
+    }
+
+    if (event.key === " ") {
+        event.preventDefault();
+        if (keyboardMoving) {
+            stopKeyboardRowMove(true);
+        } else {
+            startKeyboardRowMove(handle);
+        }
+        return;
+    }
+
+    if (!keyboardMoving) {
+        return;
+    }
+
+    if (event.key === "Escape") {
+        event.preventDefault();
+        stopKeyboardRowMove(false);
+        return;
+    }
+
+    if (event.key === "ArrowUp") {
+        event.preventDefault();
+        moveKeyboardRow(-1);
+        return;
+    }
+
+    if (event.key === "ArrowDown") {
+        event.preventDefault();
+        moveKeyboardRow(1);
+        return;
+    }
+
+    if (event.key === "Tab") {
+        event.preventDefault();
+    }
 }
 
 function setDueHint(li) {
@@ -1409,6 +1534,9 @@ todoList.addEventListener("change", function (event) {
 
 todoList.addEventListener("mousedown", enableRowDrag);
 completedList.addEventListener("mousedown", enableRowDrag);
+
+todoList.addEventListener("keydown", handleGripKeyDown);
+completedList.addEventListener("keydown", handleGripKeyDown);
 
 completedList.addEventListener("change", function (event) {
     const checkbox = event.target.closest("input[type='checkbox']");
