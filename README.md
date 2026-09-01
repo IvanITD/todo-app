@@ -3,7 +3,7 @@
 A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or backend — todos are saved in the browser with `localStorage`.
 
 **Live demo:** [https://ivanitd.github.io/todo-app/](https://ivanitd.github.io/todo-app/)  
-**Version:** 1.13.0  
+**Version:** 1.14.0  
 **Author:** Ivan Ivanov  
 **License:** [MIT](LICENSE)
 
@@ -30,6 +30,7 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 - **Tag** filter shows All tags, or only Work, Home, or Personal (works with search)
 - Sort dropdown reorders active and completed lists by date added, due date, priority, or **Custom order**. Switching away from Custom and back restores the last drag layout
 - Drag the left 6-dot grip to reorder a row (active and completed only). Drag switches Sort to Custom order so the list stays put
+- Keyboard reorder: Tab to the 6 dots, **Space** to pick up, **↑ / ↓** to move, **Space** to drop (Escape cancels). Same Custom order save as a mouse drag. Bin has no grip
 - Completing a normal task collapses the row, then it moves to Completed (repeating tasks stay Active)
 - Empty-state messages when a list has no items
 - Todos persist across page refreshes
@@ -44,7 +45,7 @@ A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks,
 1. Type a task and click **Add** (or press Enter).
 2. Use **Search todos** to show only names that match (live as you type). Use **Search in** for **All lists**, **Active**, **Completed**, or **Bin**. Searching Completed or Bin (or All, when those lists have a match) opens that section. Click the **×** in the search box (or clear the text) to see the full list again.
 3. Use the sort menu for **Date added**, **Due date**, **Priority**, or **Custom order** (set due date and priority in **☰**). Use **Tag** to show All tags, or only Work, Home, or Personal.
-4. Drag the 6-dot grip on the left of a row to change the order. That sets Sort to **Custom order**. Date added / Due date / Priority still sort live; picking **Custom order** again brings back the last drag layout. Check the circle to complete a normal task — the row collapses, then appears under **Show Completed Todos**. **Move all to Bin** sends every completed item to the Bin.
+4. Drag the 6-dot grip on the left of a row to change the order, or Tab to the dots and use **Space** then **↑ / ↓** then **Space**. Either way sets Sort to **Custom order**. Date added / Due date / Priority still sort live; picking **Custom order** again brings back the last drag layout. Check the circle to complete a normal task — the row collapses, then appears under **Show Completed Todos**. **Move all to Bin** sends every completed item to the Bin.
 5. Double-click the text to rename a task, or click **☰** for the full editor (notes, due date, repeat, remind, priority, tag, subtasks, and more). Close or click the dim backdrop to save. **Overdue**, **Today**, or **Tomorrow** appears on the row when the due date needs attention. **Work**, **Home**, or **Personal** appears when a tag is set. Subtasks stay in ☰ (count and bar update as you check them; Enter adds a subtask). Set **Remind** after Repeat (needs a due date). A quiet line under the name shows **Due today** / **In 15m** (and **Last done** on the same line, separated by **•**). A toast at the top fires when a reminder is due, or confirms the next repeat date.
 6. Click **X** to move one task to the **Bin**.
 7. Open **Bin** to restore a task, restore all, delete one forever, or empty the bin.
@@ -131,6 +132,10 @@ Screenshots of the real HTML and CSS at each **main** release live in a closed s
 <strong>v1.13.0</strong><br>Reminders<br>
 <img src="assets/screenshots/v1.13.0.png" width="200" alt="v1.13.0 Reminders">
 </td>
+<td align="center" valign="top">
+<strong>v1.14.0</strong><br>Keyboard reorder<br>
+<img src="assets/screenshots/v1.14.0.png" width="200" alt="v1.14.0 Keyboard reorder">
+</td>
 </tr>
 </table>
 
@@ -188,6 +193,7 @@ The app was built in phases — structure and styling first, then behavior, then
 | **Phase 17** | Recurring tasks — Repeat in ☰, weekday circles, Last done | Done |
 | **v1.12.1** | Custom order restore, collapse on complete, editor polish | Done |
 | **Phase 18** | Reminders — pills in ☰, row caption, toast | Done |
+| **Phase 19** | Keyboard reorder — Space to pick up, arrows to move | Done |
 
 ## How the Completed Toggle Works
 
@@ -251,6 +257,16 @@ The 6-dot grip is a `button` with class `todo-drag-handle` (`data-action="drag"`
 Drag uses `mousedown` / `mousemove` / `mouseup` on `document`, not HTML5 `draggable`. While dragging, the real row is `position: fixed` and follows the pointer. A dashed olive `li.todo-drag-placeholder` marks the drop slot. On mouseup, `placeholder.replaceWith(draggedItem)`, then `setSortMode("manual")` and `saveTodos()`.
 
 Sort used to undo a drag (`saveTodos` → `updateEmptyMessages` → `sortTodos`). Custom order skips that sort so the new order sticks. Picking Date added, Due date, or Priority still sorts on purpose; Custom again restores the last drag (v1.12.1).
+
+## How Keyboard Reorder Works
+
+No extra HTML and no extra `localStorage` key. The grip is already a `button` (`.todo-drag-handle`). Tab lands on it like any control — not grip-to-grip only.
+
+`:focus-visible` draws an olive ring (`#8d7f60`; dark `#d7c79e`). `aria-label` is **Reorder task**. `aria-grabbed` is `"false"` until Space picks the row up.
+
+`handleGripKeyDown` sits on `#todo-list` and `#completed-todo-list`. It only runs when focus is on the grip. `event.key === " "` (a space, not the word Space) calls `startKeyboardRowMove` or `stopKeyboardRowMove(true)`. That reuses the same lifted `.todo-dragging` row and dashed `.todo-drag-placeholder` as mouse drag. Arrow Up / Down call `moveKeyboardRow(-1)` / `moveKeyboardRow(1)`, skip hidden rows and the lifted row, then line the floating row up with the slot. Escape calls `stopKeyboardRowMove(false)` (placeholder removed, no save). Tab is blocked only while a row is held. `keyboardMoving` stops a mouse drag from starting at the same time.
+
+Drop runs `setSortMode("manual")` and `saveTodos()`, same as mouseup. Chosen look **B**.
 
 ## How Recurring Works
 
