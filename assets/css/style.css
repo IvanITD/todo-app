@@ -1585,6 +1585,32 @@ header {
     outline-color: #d7c79e;
 }
 
+#todo-list .todo-drag-handle.todo-drag-press,
+#completed-todo-list .todo-drag-handle.todo-drag-press {
+    position: relative;
+}
+
+#todo-list .todo-drag-handle.todo-drag-press::after,
+#completed-todo-list .todo-drag-handle.todo-drag-press::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1.85rem;
+    height: 1.85rem;
+    margin-top: -0.925rem;
+    margin-left: -0.925rem;
+    border: 2px solid #8d7f60;
+    border-radius: 50%;
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+[data-theme="dark"] #todo-list .todo-drag-handle.todo-drag-press::after,
+[data-theme="dark"] #completed-todo-list .todo-drag-handle.todo-drag-press::after {
+    border-color: #d7c79e;
+}
+
 #todo-list .todo-dragging,
 #completed-todo-list .todo-dragging {
     position: fixed;

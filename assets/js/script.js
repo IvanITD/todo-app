@@ -164,9 +164,14 @@ let dragPlaceholder = null;
 let dragOffsetX = 0;
 let dragOffsetY = 0;
 let keyboardMoving = false;
+let touchHoldTimer = null;
+let touchHandle = null;
+let touchStartX = 0;
+let touchStartY = 0;
+let touchMoving = false;
 function enableRowDrag(event) {
     const handle = event.target.closest(".todo-drag-handle");
-    if (!handle || event.button !== 0 || keyboardMoving) {
+    if (!handle || event.button !== 0 || keyboardMoving || touchMoving) {
         return;
     }
 
@@ -190,14 +195,13 @@ function enableRowDrag(event) {
     document.addEventListener("mouseup", handleRowDragStop);
 }
 
-function handleRowDragMove(event) {
-    event.preventDefault();
+function moveDraggedRow(clientX, clientY) {
     if (!draggedItem || !dragPlaceholder) {
         return;
     }
 
-    draggedItem.style.left = event.clientX - dragOffsetX + "px";
-    draggedItem.style.top = event.clientY - dragOffsetY + "px";
+    draggedItem.style.left = clientX - dragOffsetX + "px";
+    draggedItem.style.top = clientY - dragOffsetY + "px";
 
     const list = dragPlaceholder.parentNode;
     const rows = [...list.querySelectorAll(":scope > li")];
@@ -210,7 +214,7 @@ function handleRowDragMove(event) {
         }
 
         const rect = row.getBoundingClientRect();
-        if (event.clientY < rect.top + rect.height / 2) {
+        if (clientY < rect.top + rect.height / 2) {
             marker = row;
             break;
         }
@@ -223,6 +227,11 @@ function handleRowDragMove(event) {
     } else if (list.lastElementChild !== dragPlaceholder) {
         list.append(dragPlaceholder);
     }
+}
+
+function handleRowDragMove(event) {
+    event.preventDefault();
+    moveDraggedRow(event.clientX, event.clientY);
 }
 
 function handleRowDragStop() {
@@ -243,8 +252,99 @@ function handleRowDragStop() {
     draggedItem.style.left = "";
     draggedItem.style.top = "";
     draggedItem = null;
+    touchMoving = false;
+    clearTouchPress();
     setSortMode("manual");
     saveTodos();
+}
+
+function clearTouchPress() {
+    if (touchHoldTimer !== null) {
+        clearTimeout(touchHoldTimer);
+        touchHoldTimer = null;
+    }
+    if (touchHandle) {
+        touchHandle.classList.remove("todo-drag-press");
+        touchHandle = null;
+    }
+}
+
+function handleGripTouchStart(event) {
+    if (event.touches.length !== 1 || keyboardMoving || draggedItem) {
+        return;
+    }
+
+    const handle = event.target.closest(".todo-drag-handle");
+    if (!handle) {
+        return;
+    }
+
+    const touch = event.touches[0];
+    touchHandle = handle;
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+    touchHoldTimer = setTimeout(function () {
+        touchHoldTimer = null;
+        if (touchHandle) {
+            startTouchRowMove(touchHandle);
+        }
+    }, 300);
+}
+
+function handleGripTouchMove(event) {
+    if (event.touches.length !== 1) {
+        return;
+    }
+
+    const touch = event.touches[0];
+    if (touchMoving) {
+        event.preventDefault();
+        moveDraggedRow(touch.clientX, touch.clientY);
+        return;
+    }
+
+    if (!touchHandle) {
+        return;
+    }
+
+    const dx = touch.clientX - touchStartX;
+    const dy = touch.clientY - touchStartY;
+    if (dx * dx + dy * dy > 144) {
+        clearTouchPress();
+    }
+}
+
+function handleGripTouchEnd() {
+    if (touchMoving) {
+        handleRowDragStop();
+    } else {
+        clearTouchPress();
+    }
+}
+
+function startTouchRowMove(handle) {
+    if (keyboardMoving || draggedItem) {
+        return;
+    }
+
+    const li = handle.closest("li");
+    const rect = li.getBoundingClientRect();
+
+    draggedItem = li;
+    touchMoving = true;
+    dragOffsetX = touchStartX - rect.left;
+    dragOffsetY = touchStartY - rect.top;
+
+    dragPlaceholder = document.createElement("li");
+    dragPlaceholder.className = "todo-drag-placeholder";
+    dragPlaceholder.style.height = rect.height + "px";
+    li.after(dragPlaceholder);
+
+    li.classList.add("todo-dragging");
+    li.style.width = rect.width + "px";
+    li.style.left = rect.left + "px";
+    li.style.top = rect.top + "px";
+    handle.classList.add("todo-drag-press");
 }
 
 function startKeyboardRowMove(handle) {
@@ -1534,6 +1634,15 @@ todoList.addEventListener("change", function (event) {
 
 todoList.addEventListener("mousedown", enableRowDrag);
 completedList.addEventListener("mousedown", enableRowDrag);
+
+todoList.addEventListener("touchstart", handleGripTouchStart);
+completedList.addEventListener("touchstart", handleGripTouchStart);
+todoList.addEventListener("touchmove", handleGripTouchMove, { passive: false });
+completedList.addEventListener("touchmove", handleGripTouchMove, { passive: false });
+todoList.addEventListener("touchend", handleGripTouchEnd);
+completedList.addEventListener("touchend", handleGripTouchEnd);
+todoList.addEventListener("touchcancel", handleGripTouchEnd);
+completedList.addEventListener("touchcancel", handleGripTouchEnd);
 
 todoList.addEventListener("keydown", handleGripKeyDown);
 completedList.addEventListener("keydown", handleGripKeyDown);
