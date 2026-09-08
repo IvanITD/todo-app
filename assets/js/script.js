@@ -241,6 +241,9 @@ function handleRowDragStop() {
 
     document.removeEventListener("mousemove", handleRowDragMove);
     document.removeEventListener("mouseup", handleRowDragStop);
+    document.removeEventListener("touchmove", handleGripTouchMove);
+    document.removeEventListener("touchend", handleGripTouchEnd);
+    document.removeEventListener("touchcancel", handleGripTouchEnd);
 
     if (dragPlaceholder) {
         dragPlaceholder.replaceWith(draggedItem);
@@ -345,6 +348,10 @@ function startTouchRowMove(handle) {
     li.style.left = rect.left + "px";
     li.style.top = rect.top + "px";
     handle.classList.add("todo-drag-press");
+
+    document.addEventListener("touchmove", handleGripTouchMove, { passive: false });
+    document.addEventListener("touchend", handleGripTouchEnd);
+    document.addEventListener("touchcancel", handleGripTouchEnd);
 }
 
 function startKeyboardRowMove(handle) {
