@@ -1,61 +1,131 @@
 # Todo App
 
-A browser todo list built with HTML, CSS, and vanilla JavaScript. No frameworks, build tools, or backend — todos are saved in the browser with `localStorage`.
+<p align="center">
+  <strong>A browser todo list — HTML, CSS, and vanilla JavaScript.</strong><br>
+  No frameworks. No backend. Your list stays in <code>localStorage</code>.
+</p>
 
-**Live demo:** [https://ivanitd.github.io/todo-app/](https://ivanitd.github.io/todo-app/)  
-**Version:** 1.14.0  
-**Author:** Ivan Ivanov  
-**License:** [MIT](LICENSE)
+<p align="center">
+  <a href="https://todo-app-brown-six-47.vercel.app/">
+    <img src="assets/screenshots/v1.14.0.png" width="420" alt="Todo App">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://todo-app-brown-six-47.vercel.app/"><img src="https://img.shields.io/badge/Live_demo-Vercel-8d7f60?style=for-the-badge&logo=vercel&logoColor=white" alt="Live demo"></a>
+  <img src="https://img.shields.io/badge/Version-1.14.0-c7b99b?style=for-the-badge" alt="Version 1.14.0">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="MIT License"></a>
+</p>
+
+<p align="center">
+  <a href="https://todo-app-brown-six-47.vercel.app/"><strong>Open the live app</strong></a>
+  &nbsp;·&nbsp; Ivan Ivanov
+  &nbsp;·&nbsp; <a href="LICENSE">MIT</a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white" alt="HTML5">
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css&logoColor=white" alt="CSS3">
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=222" alt="JavaScript">
+</p>
+
+---
 
 ## Features
 
-- Add todos from the form
-- Move a todo to the **Bin** with the **X** button
-- **Move all to Bin** sends every completed todo to the Bin at once
-- Restore one binned task, restore all, or delete one forever
-- Empty the bin with an in-app confirm (Cancel or Empty bin)
-- Check an item to move it to the completed list
-- Uncheck a completed item to move it back
-- Double-click todo text to edit (Enter or click away to save, Escape to cancel)
-- **☰** opens a task editor overlay (name, notes, due date, repeat, remind, priority, tag, subtasks, created date, completed)
-- Remind in ☰: **Off**, **Due today**, **15m**, **30m**, **1h**, or **1d** (one pill at a time). Needs a due date. While the tab is open, a toast fires when that offset from the start of the due day is reached
-- Repeat in ☰: None, Daily, Weekly (Mon–Fri), Weekend, Fortnight (all days + **×2**), Monthly, or Custom. Seven day circles stay visible; the dropdown fills them, and clicking a circle can set Custom
-- Checking off a repeating task keeps it Active, moves the due date forward, and writes **Last done** under the name. A reminder caption can sit on the same line (`In 15m • Last done 31 Aug`). Too early shows a toast at the top instead of changing the date
-- Subtasks in ☰: checklist with a count (`2 of 3`), progress bar, and a left olive rail (saved on the task). Enter adds a subtask; the circle shows a tick when checked
-- Due-soon chips on the row: **Overdue**, **Today**, **Tomorrow** (set the date in ☰; later dates stay quiet)
-- Tag chips on the row: **Work**, **Home**, **Personal** (set in ☰; None hides the chip)
-- Search, **Search in**, Sort, and **Tag** sit in one toolbar card (`#todo-tools`)
-- Search box filters todos by name as you type (hidden, not deleted). Empty field shows an olive/cream glass on the right; typed text shows a matching **×** that clears the box
-- **Search in** limits search to All lists, Active, Completed, or Bin — and opens Completed or Bin when you search there
-- **Tag** filter shows All tags, or only Work, Home, or Personal (works with search)
-- Sort dropdown reorders active and completed lists by date added, due date, priority, or **Custom order**. Switching away from Custom and back restores the last drag layout
-- Drag the left 6-dot grip to reorder a row (active and completed only). Drag switches Sort to Custom order so the list stays put
-- Keyboard reorder: Tab to the 6 dots, **Space** to pick up, **↑ / ↓** to move, **Space** to drop (Escape cancels). Same Custom order save as a mouse drag. Bin has no grip
+<table>
+<tr>
+<td valign="top" width="50%">
+
+**Lists**
+- Add from the form
+- Check to complete, uncheck to restore
 - Completing a normal task collapses the row, then it moves to Completed (repeating tasks stay Active)
-- Empty-state messages when a list has no items
-- Todos persist across page refreshes
-- Light / Dark theme switch in the header (sun and moon on a sliding pill; saved in the browser)
+- Empty-state messages
+- Saved across refresh in the browser
 - **Show Completed Todos** and **Bin** toggles (pure CSS)
-- Hover styles on Add, Bin, Restore All, Empty bin, Move all to Bin, and the theme toggle in both themes
-- Custom circular checkboxes on the list and in the task editor, gold/tan card layout
-- Accessible labels on form controls
+
+**Bin**
+- **X** moves one task to the Bin
+- **Move all to Bin** for every completed task
+- Restore one, restore all, or delete forever
+- Empty bin with an in-app confirm (Cancel or Empty bin)
+
+</td>
+<td valign="top" width="50%">
+
+**Editor (☰)**
+- Name, notes, due date, repeat, remind, priority, tag, subtasks, created date, completed
+- Double-click a name to rename (Enter / click away to save, Escape to cancel)
+- Subtasks: count (`2 of 3`), progress bar, olive rail; Enter adds; circle shows a tick
+- Repeat: None, Daily, Weekly (Mon–Fri), Weekend, Fortnight (**×2**), Monthly, Custom
+- Remind: Off, Due today, 15m, 30m, 1h, 1d (toast while the tab is open)
+
+**Toolbar**
+- Search by name (hidden, not deleted) with a glass / **×**
+- **Search in:** All / Active / Completed / Bin
+- Sort: date added, due, priority, or **Custom order**
+- Tag filter: All / Work / Home / Personal
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
+**On the row**
+- Due chips: **Overdue**, **Today**, **Tomorrow**
+- Tag chips: **Work**, **Home**, **Personal**
+- Repeat **Last done** and remind caption on one line (`In 15m • Last done 31 Aug`)
+
+</td>
+<td valign="top">
+
+**Reorder & look**
+- Drag the 6-dot grip (sets Custom order)
+- Keyboard: Tab to the grip, **Space**, **↑ / ↓**, **Space** (Escape cancels). Bin has no grip
+- Light / Dark sun–moon pill
+- Circular checkboxes, gold/tan cards, hover styles, accessible labels
+
+</td>
+</tr>
+</table>
+
+---
 
 ## How to use
 
-1. Type a task and click **Add** (or press Enter).
-2. Use **Search todos** to show only names that match (live as you type). Use **Search in** for **All lists**, **Active**, **Completed**, or **Bin**. Searching Completed or Bin (or All, when those lists have a match) opens that section. Click the **×** in the search box (or clear the text) to see the full list again.
-3. Use the sort menu for **Date added**, **Due date**, **Priority**, or **Custom order** (set due date and priority in **☰**). Use **Tag** to show All tags, or only Work, Home, or Personal.
-4. Drag the 6-dot grip on the left of a row to change the order, or Tab to the dots and use **Space** then **↑ / ↓** then **Space**. Either way sets Sort to **Custom order**. Date added / Due date / Priority still sort live; picking **Custom order** again brings back the last drag layout. Check the circle to complete a normal task — the row collapses, then appears under **Show Completed Todos**. **Move all to Bin** sends every completed item to the Bin.
-5. Double-click the text to rename a task, or click **☰** for the full editor (notes, due date, repeat, remind, priority, tag, subtasks, and more). Close or click the dim backdrop to save. **Overdue**, **Today**, or **Tomorrow** appears on the row when the due date needs attention. **Work**, **Home**, or **Personal** appears when a tag is set. Subtasks stay in ☰ (count and bar update as you check them; Enter adds a subtask). Set **Remind** after Repeat (needs a due date). A quiet line under the name shows **Due today** / **In 15m** (and **Last done** on the same line, separated by **•**). A toast at the top fires when a reminder is due, or confirms the next repeat date.
-6. Click **X** to move one task to the **Bin**.
-7. Open **Bin** to restore a task, restore all, delete one forever, or empty the bin.
-8. Click the sun / moon switch in the header to change theme.
+| Step | What to do |
+| :---: | --- |
+| 1 | Type a task and click **Add** (or press Enter) |
+| 2 | Search as you type. **Search in** picks All / Active / Completed / Bin. **×** clears the box |
+| 3 | Sort by date added, due, priority, or Custom order. **Tag** filters Work / Home / Personal |
+| 4 | Drag the 6 dots, or Tab → **Space** → arrows → **Space**. Check the circle to complete. **Move all to Bin** clears Completed |
+| 5 | Double-click to rename, or **☰** for the full editor. Close or click the backdrop to save |
+| 6 | **X** sends one task to the Bin |
+| 7 | Open **Bin** to restore, restore all, delete forever, or empty |
+| 8 | Click the sun / moon switch for Light / Dark |
 
 Each visitor’s list is stored only in their own browser.
 
-## How to run locally
+---
 
-Open `index.html` in a browser, or use Live Server in your editor. No install step.
+## Run locally
+
+Open `index.html` in a browser, or use Live Server. No install step.
+
+```
+todo-app/
+├── index.html
+├── README.md
+├── LICENSE
+├── .gitignore
+└── assets/
+    ├── css/style.css
+    ├── js/script.js
+    └── screenshots/
+```
+
+---
 
 ## Version gallery
 
@@ -141,29 +211,10 @@ Screenshots of the real HTML and CSS at each **main** release live in a closed s
 
 </details>
 
-## Tech Stack
+<details>
+<summary><strong>Build history</strong></summary>
 
-- HTML5
-- CSS3 (Flexbox, custom checkboxes, `:has()` selector)
-- Vanilla JavaScript (DOM events, `localStorage`)
-
-## Project Structure
-
-```
-todo-app/
-├── README.md
-├── LICENSE
-├── .gitignore
-├── index.html              # App entry point
-└── assets/
-    ├── css/
-    │   └── style.css       # All styles
-    ├── js/
-    │   └── script.js       # App logic
-    └── screenshots/        # Main-version gallery (README)
-```
-
-## Development Phases
+<br>
 
 The app was built in phases — structure and styling first, then behavior, then persistence and a public release.
 
@@ -195,134 +246,10 @@ The app was built in phases — structure and styling first, then behavior, then
 | **Phase 18** | Reminders — pills in ☰, row caption, toast | Done |
 | **Phase 19** | Keyboard reorder — Space to pick up, arrows to move | Done |
 
-## How the Completed Toggle Works
+</details>
 
-The **Show Completed Todos** control uses a hidden checkbox and a styled label as a button. When checked, CSS reveals the completed list:
-
-```css
-#completed-todo-container-checkbox:has(#completed-todo-checkbox:checked) ~ #completed-todo-list-container {
-    display: block;
-}
-```
-
-The toggle card and completed list are separate blocks under `<main>` — the list appears below the button, not inside the same card.
-
-**Move all to Bin** (`#completed-bin-all`) lives inside `#completed-todo-list-container`, not inside the `<ul>`, so it is not saved as a todo. A click runs `moveToBin` on every completed row (same helper as **X**).
-
-## How the Task Editor Works
-
-There is **one** overlay for the whole page (`#task-editor`), not a copy inside each todo. Clicking **☰** fills that panel from the chosen row and removes the `hidden` attribute. Close (or the backdrop) writes the fields back onto that row, then saves.
-
-The overlay uses `hidden` to hide. CSS only applies `display: flex` when the attribute is off (`#task-editor:not([hidden])`), so `display` does not override `hidden`.
-
-The **Completed** checkbox in the overlay uses the same circular style as the list (`appearance: none`, `border-radius: 50%`). Dark-theme button hovers are extra rules (`[data-theme="dark"] …:hover`) so they are not overwritten by the dark resting colors.
-
-## How Subtasks Work
-
-Subtasks live only in ☰ (`#task-editor-subtasks-block`), not on the main row. The empty `<ul id="task-editor-subtasks">` is in HTML; each row is created in JS (`createSubtaskItem`) like a mini todo: circle, name, **X**. **Add** is `type="button"` (`#task-editor-subtask-add`). Enter in the add box runs the same Add click. The circle uses the same white tick as the main list; **X** turns rust `#8f4b4b` on hover.
-
-`updateSubtaskProgress` writes **done of total** and sets `#task-editor-subtasks-progress-fill` width to `(done / total) * 100%` (or `0%` if the list is empty). It runs after Add, after **X**, and on checkbox `change`.
-
-There is no extra `localStorage` key. `subtasks` is an array of `{ text, isDone }` stored as JSON on `data-subtasks` (`readSubtasks` / `writeSubtasks`). Close ☰ runs `collectEditorSubtasks`. Open ☰ runs `fillEditorSubtasks`. Old todos with no field load as `[]`. The left rail is `border-left` on the `ul` (before the circles, not next to **X**).
-
-## How Search Works
-
-`#todo-search` is **outside** the add form so Enter does not create a todo. Search, **Search in**, Sort, and **Tag** live in one `#todo-tools` card. The search field sits in `.todo-search-wrap` with a decorative `.todo-search-icon` (not a button) and `.todo-search-clear` (`type="button"`). `#todo-search-in` sits under the search box, also outside the form. Option values: `all`, `active`, `completed`, `bin` (must match JS).
-
-On each keystroke, `filterTodos` compares the query to each row’s name (case-insensitive) and sets `li.hidden` on non-matches. Changing **Search in** runs the same function (`change`, not `input`). The glass shows when the box is empty (`:placeholder-shown`); the **×** shows when there is text. Clicking **×** sets the value to `""`, focuses the field, and runs `filterTodos`. WebKit’s own search glass and cancel control are turned off so ours sit on the right in olive `#8d7f60` (cream `#d7c79e` in dark). Search does not change `localStorage`.
-
-- **All lists** — search active, completed, and Bin. If the query matches a completed or binned name, that section opens.
-- **Active** — search the main list only
-- **Completed** / **Bin** — search that list only, and check the section toggle so it is visible
-
-List rows use `display: flex`. That would override `hidden` the same way the overlay did, so flex is applied only with `#todo-list li:not([hidden])` (and the same for the completed list and `#bin-list li:not([hidden])`).
-
-## How Sort Works
-
-`#todo-sort` sits in `#todo-tools-row` next to **Search in** and **Tag**, outside the add form. It reorders the **active** and **completed** lists only (not the Bin). Date / due / priority still read `createdAt`, `dueDate`, and `priority` on each row. The chosen mode is saved in `todoSort`.
-
-- **Date added** — oldest `createdAt` first  
-- **Due date** — earliest due first; todos with no date go last  
-- **Priority** — High, then Medium, then Low, then None  
-- **Custom order** — restore the last drag layout (not “whatever the list looks like after Due date”)
-
-Each task gets a hidden `id` (old todos get one on load). Leaving Custom, or dropping a drag, writes Active + Completed ids to `todoCustomOrder`. Picking Custom again runs `applyCustomOrder`. New tasks that were not in that snapshot go at the end. Date added / Due date / Priority do not overwrite that snapshot.
-
-`sortTodos` runs on dropdown `change` and inside `updateEmptyMessages` (before `filterTodos`), so add, restore, and editor saves keep the current sort — except Custom order, which returns early. `list.append(li)` moves existing rows; it does not copy them.
-
-## How Drag Works
-
-The 6-dot grip is a `button` with class `todo-drag-handle` (`data-action="drag"`). `createTodoItem` puts it first in the row, before the checkbox. It is not in `index.html`. Bin rows do not get a handle.
-
-Drag uses `mousedown` / `mousemove` / `mouseup` on `document`, not HTML5 `draggable`. While dragging, the real row is `position: fixed` and follows the pointer. A dashed olive `li.todo-drag-placeholder` marks the drop slot. On mouseup, `placeholder.replaceWith(draggedItem)`, then `setSortMode("manual")` and `saveTodos()`.
-
-Sort used to undo a drag (`saveTodos` → `updateEmptyMessages` → `sortTodos`). Custom order skips that sort so the new order sticks. Picking Date added, Due date, or Priority still sorts on purpose; Custom again restores the last drag (v1.12.1).
-
-## How Keyboard Reorder Works
-
-No extra HTML and no extra `localStorage` key. The grip is already a `button` (`.todo-drag-handle`). Tab lands on it like any control — not grip-to-grip only.
-
-`:focus-visible` draws an olive ring (`#8d7f60`; dark `#d7c79e`). `aria-label` is **Reorder task**. `aria-grabbed` is `"false"` until Space picks the row up.
-
-`handleGripKeyDown` sits on `#todo-list` and `#completed-todo-list`. It only runs when focus is on the grip. `event.key === " "` (a space, not the word Space) calls `startKeyboardRowMove` or `stopKeyboardRowMove(true)`. That reuses the same lifted `.todo-dragging` row and dashed `.todo-drag-placeholder` as mouse drag. Arrow Up / Down call `moveKeyboardRow(-1)` / `moveKeyboardRow(1)`, skip hidden rows and the lifted row, then line the floating row up with the slot. Escape calls `stopKeyboardRowMove(false)` (placeholder removed, no save). Tab is blocked only while a row is held. `keyboardMoving` stops a mouse drag from starting at the same time.
-
-Drop runs `setSortMode("manual")` and `saveTodos()`, same as mouseup. Chosen look **B**.
-
-## How Recurring Works
-
-Repeat lives in ☰, after Due date and before Remind (`#task-editor-repeat` plus `#task-editor-repeat-days`). The seven day buttons and **×2** stay on screen. The dropdown fills the circles; clicking a circle updates Repeat when the days match a preset (Mon–Fri → Weekly, Sat+Sun → Weekend, all seven → Daily, all seven + ×2 → Fortnight). Monthly still uses the due date’s weekday as a hint.
-
-There is no extra `localStorage` key. `repeat`, `repeatDays`, and `lastCompleted` sit on each todo next to `tag`. `readRepeatDays` / `writeRepeatDays` store the day list as JSON, like subtasks.
-
-Checking off a repeating task runs `tryCompleteRepeatingTodo`. If the due date is still in the future, the checkbox snaps back and `showToast` shows a message at the top. If it is due today, overdue, or has no date, the due date moves forward, `lastCompleted` becomes today, and **Last done** appears under the name (`.todo-caption` in `.todo-text`). The row stays in Active. Repeat **None** still goes to Completed: the row collapses (`.todo-completing`, about 300ms), then moves. **×2** is a dashed pill, slightly apart from the weekday circles.
-
-`showToast` is the shared top-of-page message (slide in, then slide up). Repeat uses `showTodoMessage` so the toast includes the task name.
-
-## How Reminders Work
-
-Remind lives in ☰ after the Repeat day row and before Priority (`#task-editor-remind-heading` plus `#task-editor-remind`). Six `type="button"` pills: **Off**, **Due today**, **15m**, **30m**, **1h**, **1d**. Class `task-editor-remind-option`, `data-remind` values `off` / `ontime` / `15m` / `30m` / `1h` / `1d`. Only one is `aria-pressed="true"` at a time (`readEditorRemind` / `writeEditorRemind`).
-
-There is no extra `localStorage` key. `remind` sits on each todo next to `repeat`. Old todos load as **Off**. A reminder without a due date never fires.
-
-Due is a **day**, treated as midnight at the start of that date (`dateFromIso`). **Due today** (`ontime`) fires from that midnight. **1h** / **30m** / **15m** subtract that duration. **1d** is midnight the day before (`addDays(due, -1)`). `checkReminders` runs after `loadTodos`, at the end of `saveTodos`, and every 60s. It only looks at `#todo-list`. `remindedKeys` (in memory) stops the same task + due + pill toasting every minute.
-
-The row caption is one span (`.todo-caption` inside `.todo-captions`). `setRowCaption` joins remind text and Last done with ` • ` (`In 15m • Last done 31 Aug`). Work / Overdue stay chips on the name line. Double-click skips `.todo-caption`.
-
-## How Due Hints Work
-
-Each active/completed row has a `.todo-due-hint` span (created in `createTodoItem`, not in `index.html`). Bin rows do not. `applyTodoDetails` calls `setDueHint`, which compares `dueDate` to `todayDate()` and `tomorrowDate()`. No extra `localStorage` key — it reads the due date already saved on the row.
-
-- **Overdue** — date is before today (`#8f4b4b`)
-- **Today** — date is today (`#8d7f60`)
-- **Tomorrow** — date is tomorrow (`#b2a486`, a lighter Today gold — not button tan `#c7b99b`)
-- No date, or a later date — the hint stays `hidden`
-
-`#todo-list li span` would style the hint like the name box, so `.todo-due-hint` comes after that rule and wins.
-
-## How Tags Work
-
-Each task has one fixed tag: **None**, **Work**, **Home**, or **Personal**. Set it in ☰ (`#task-editor-tag`). Filter from `#todo-tag-filter` in the tools row (`all`, `work`, `home`, `personal`). There is no extra `localStorage` key — `tag` is stored on each todo next to `priority`.
-
-Active and completed rows get a `.todo-tag` chip (created in `createTodoItem`, not in `index.html`). Bin rows do not. `applyTodoDetails` calls `setTagChip`. None hides the chip. Colors: Work `#8d7f60`, Home `#b2a486`, Personal `#7a6d52`. `.todo-tag` is grouped with `.todo-due-hint` so it is not styled like the name box.
-
-Search and Tag both have to match. When **Search in** skips a list, Tag still applies (`showAllRows`). Double-click skips the chip and the due hint so those labels are not renamed.
-
-## How the Theme Switch Works
-
-`#theme-toggle` is a `div` with `role="button"` in the header (same `id`, same click, same `todoTheme` key). Inside it: a sun, a sliding knob, and a moon. The sun is an SVG — eight copies of one bar, rotated around the center — so the rays stay even. CSS slides the knob when `<html>` has `data-theme="dark"`. Do not set `themeToggle.textContent` — that would wipe the inner markup. Dark track is charcoal `#2b2b2b`, not cream, so the pill does not vanish into the olive header. Do not put `#theme-toggle` on the brown `#8d7f60` button group. The pill uses whole-pixel sizes so Safari does not hop the sun on press. Enter and Space still toggle the theme.
-
-## How Persistence Works
-
-After add, delete, complete, edit, bin, or closing the task editor, the app saves:
-
-- `todos` — active and completed items as `{ id, text, isDone, notes, dueDate, lastCompleted, priority, tag, repeat, repeatDays, remind, subtasks, createdAt }`
-- `binnedTodos` — bin items with the same shape (`isDone` remembers whether to restore to active or completed)
-- `todoTheme` — `"dark"` or `"light"`
-- `todoSort` — `"created"`, `"due"`, `"priority"`, or `"manual"`
-- `todoCustomOrder` — `{ active, completed }` arrays of task `id`s (last Custom layout)
-
-On load, both lists and the bin are rebuilt from that data. If nothing is saved, they start empty. Todos created before v1.3.0 still load; extra fields start empty until you open and close the editor once. Todos created before v1.9.0 load with tag **None**. Todos created before v1.10.0 load with no subtasks. Todos created before v1.12.0 load with Repeat **None** and no last-done date. Todos created before v1.12.1 get an `id` on load. Todos created before v1.13.0 load with Remind **Off**.
+---
 
 ## License
 
-This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](LICENSE).
