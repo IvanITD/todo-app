@@ -7,13 +7,13 @@
 
 <p align="center">
   <a href="https://todo-app-brown-six-47.vercel.app/">
-    <img src="assets/screenshots/v1.14.0.png" width="420" alt="Todo App">
+    <img src="assets/screenshots/v1.15.0.png" width="420" alt="Todo App">
   </a>
 </p>
 
 <p align="center">
   <a href="https://todo-app-brown-six-47.vercel.app/"><img src="https://img.shields.io/badge/Live_demo-Vercel-8d7f60?style=for-the-badge&logo=vercel&logoColor=white" alt="Live demo"></a>
-  <img src="https://img.shields.io/badge/Version-1.14.0-c7b99b?style=for-the-badge" alt="Version 1.14.0">
+  <img src="https://img.shields.io/badge/Version-1.15.1-c7b99b?style=for-the-badge" alt="Version 1.15.1">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="MIT License"></a>
 </p>
 
@@ -81,7 +81,7 @@
 <td valign="top">
 
 **Reorder & look**
-- Drag the 6-dot grip (sets Custom order)
+- Drag the 6-dot grip (sets Custom order). On a phone, hold the dots ~300ms until the olive ring, then slide
 - Keyboard: Tab to the grip, **Space**, **↑ / ↓**, **Space** (Escape cancels). Bin has no grip
 - Light / Dark sun–moon pill
 - Circular checkboxes, gold/tan cards, hover styles, accessible labels
@@ -99,7 +99,7 @@
 | 1 | Type a task and click **Add** (or press Enter) |
 | 2 | Search as you type. **Search in** picks All / Active / Completed / Bin. **×** clears the box |
 | 3 | Sort by date added, due, priority, or Custom order. **Tag** filters Work / Home / Personal |
-| 4 | Drag the 6 dots, or Tab → **Space** → arrows → **Space**. Check the circle to complete. **Move all to Bin** clears Completed |
+| 4 | Drag the 6 dots, or Tab → **Space** → arrows → **Space**. On a phone, hold the dots until the olive ring, then slide. Check the circle to complete. **Move all to Bin** clears Completed |
 | 5 | Double-click to rename, or **☰** for the full editor. Close or click the backdrop to save |
 | 6 | **X** sends one task to the Bin |
 | 7 | Open **Bin** to restore, restore all, delete forever, or empty |
@@ -129,7 +129,7 @@ todo-app/
 
 ## Version gallery
 
-Screenshots of the real HTML and CSS at each **main** release live in a closed section below. Bugfix tags (v1.3.1, v1.7.1, v1.7.2, v1.8.1, v1.8.2, v1.9.1, v1.12.1) are skipped. Same sample todos in every shot.
+Screenshots of the real HTML and CSS at each **main** release live in a closed section below. Bugfix tags (v1.3.1, v1.7.1, v1.7.2, v1.8.1, v1.8.2, v1.9.1, v1.12.1, v1.15.1) are skipped. Same sample todos in every shot.
 
 <details>
 <summary><strong>Show version screenshots</strong></summary>
@@ -207,6 +207,14 @@ Screenshots of the real HTML and CSS at each **main** release live in a closed s
 <img src="assets/screenshots/v1.14.0.png" width="200" alt="v1.14.0 Keyboard reorder">
 </td>
 </tr>
+<tr>
+<td align="center" valign="top">
+<strong>v1.15.0</strong><br>Touch drag<br>
+<img src="assets/screenshots/v1.15.0.png" width="200" alt="v1.15.0 Touch drag">
+</td>
+<td></td>
+<td></td>
+</tr>
 </table>
 
 </details>
@@ -245,6 +253,8 @@ The app was built in phases — structure and styling first, then behavior, then
 | **v1.12.1** | Custom order restore, collapse on complete, editor polish | Done |
 | **Phase 18** | Reminders — pills in ☰, row caption, toast | Done |
 | **Phase 19** | Keyboard reorder — Space to pick up, arrows to move | Done |
+| **Phase 20** | Touch drag — hold the 6-dot grip, olive ring, slide | Done |
+| **v1.15.1** | iOS freeze fix — follow the finger on document after a touch hold | Done |
 
 </details>
 
