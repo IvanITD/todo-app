@@ -7,13 +7,13 @@
 
 <p align="center">
   <a href="https://todo-app-brown-six-47.vercel.app/">
-    <img src="assets/screenshots/v1.15.0.png" width="420" alt="Todo App">
+    <img src="assets/screenshots/v1.16.0.png" width="420" alt="Todo App">
   </a>
 </p>
 
 <p align="center">
   <a href="https://todo-app-brown-six-47.vercel.app/"><img src="https://img.shields.io/badge/Live_demo-Vercel-8d7f60?style=for-the-badge&logo=vercel&logoColor=white" alt="Live demo"></a>
-  <img src="https://img.shields.io/badge/Version-1.15.1-c7b99b?style=for-the-badge" alt="Version 1.15.1">
+  <img src="https://img.shields.io/badge/Version-1.16.0-c7b99b?style=for-the-badge" alt="Version 1.16.0">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="MIT License"></a>
 </p>
 
@@ -54,7 +54,7 @@
 </td>
 <td valign="top" width="50%">
 
-**Editor (☰)**
+**Editor (pencil)**
 - Name, notes, due date, repeat, remind, priority, tag, subtasks, created date, completed
 - Double-click a name to rename (Enter / click away to save, Escape to cancel)
 - Subtasks: count (`2 of 3`), progress bar, olive rail; Enter adds; circle shows a tick
@@ -76,6 +76,7 @@
 - Due chips: **Overdue**, **Today**, **Tomorrow**
 - Tag chips: **Work**, **Home**, **Personal**
 - Repeat **Last done** and remind caption on one line (`In 15m • Last done 31 Aug`)
+- Gray ⋮, then the **pencil** to open the editor; **X** bins
 
 </td>
 <td valign="top">
@@ -100,7 +101,7 @@
 | 2 | Search as you type. **Search in** picks All / Active / Completed / Bin. **×** clears the box |
 | 3 | Sort by date added, due, priority, or Custom order. **Tag** filters Work / Home / Personal |
 | 4 | Drag the 6 dots, or Tab → **Space** → arrows → **Space**. On a phone, hold the dots until the olive ring, then slide. Check the circle to complete. **Move all to Bin** clears Completed |
-| 5 | Double-click to rename, or **☰** for the full editor. Close or click the backdrop to save |
+| 5 | Double-click to rename, or the **pencil** for the full editor. Close or click the backdrop to save |
 | 6 | **X** sends one task to the Bin |
 | 7 | Open **Bin** to restore, restore all, delete forever, or empty |
 | 8 | Click the sun / moon switch for Light / Dark |
@@ -212,7 +213,10 @@ Screenshots of the real HTML and CSS at each **main** release live in a closed s
 <strong>v1.15.0</strong><br>Touch drag<br>
 <img src="assets/screenshots/v1.15.0.png" width="200" alt="v1.15.0 Touch drag">
 </td>
-<td></td>
+<td align="center" valign="top">
+<strong>v1.16.0</strong><br>Row editor / pencil<br>
+<img src="assets/screenshots/v1.16.0.png" width="200" alt="v1.16.0 Row editor / pencil">
+</td>
 <td></td>
 </tr>
 </table>
@@ -255,6 +259,7 @@ The app was built in phases — structure and styling first, then behavior, then
 | **Phase 19** | Keyboard reorder — Space to pick up, arrows to move | Done |
 | **Phase 20** | Touch drag — hold the 6-dot grip, olive ring, slide | Done |
 | **v1.15.1** | iOS freeze fix — follow the finger on document after a touch hold | Done |
+| **v1.16.0** | Row editor control — gray kebab, pencil button, dark-theme charcoal | Done |
 
 </details>
 

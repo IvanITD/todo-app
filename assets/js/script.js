@@ -143,19 +143,22 @@ function createTodoItem(text) {
     meta.className = "todo-meta";
     meta.append(chips);
 
+    const detailsDots = document.createElement("span");
+    detailsDots.className = "todo-details-dots";
+    detailsDots.setAttribute("aria-hidden", "true");
+
     const detailsButton = document.createElement("button");
     detailsButton.type = "button";
     detailsButton.className = "todo-details";
     detailsButton.dataset.action = "open-editor";
     detailsButton.setAttribute("aria-label", "Edit task details");
-    detailsButton.textContent = "☰";
 
     const deleteButton = document.createElement("button");
     deleteButton.type = "button";
     deleteButton.dataset.action = "bin";
     deleteButton.textContent = "X";
 
-    li.append(dragHandle, checkbox, textWrap, meta, detailsButton, deleteButton);
+    li.append(dragHandle, checkbox, textWrap, meta, detailsDots, detailsButton, deleteButton);
     return li;
 }
 
