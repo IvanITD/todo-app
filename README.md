@@ -7,13 +7,13 @@
 
 <p align="center">
   <a href="https://todo-app-brown-six-47.vercel.app/">
-    <img src="assets/screenshots/v1.16.0.png" width="420" alt="Todo App">
+    <img src="assets/screenshots/v1.17.0.png" width="420" alt="Todo App">
   </a>
 </p>
 
 <p align="center">
   <a href="https://todo-app-brown-six-47.vercel.app/"><img src="https://img.shields.io/badge/Live_demo-Vercel-8d7f60?style=for-the-badge&logo=vercel&logoColor=white" alt="Live demo"></a>
-  <img src="https://img.shields.io/badge/Version-1.16.0-c7b99b?style=for-the-badge" alt="Version 1.16.0">
+  <img src="https://img.shields.io/badge/Version-1.17.0-c7b99b?style=for-the-badge" alt="Version 1.17.0">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge" alt="MIT License"></a>
 </p>
 
@@ -46,9 +46,9 @@
 - **Show Completed Todos** and **Bin** toggles (pure CSS)
 
 **Bin**
-- **X** moves one task to the Bin
+- Cream **×** on a row moves one task to the Bin
 - **Move all to Bin** for every completed task
-- Restore one, restore all, or delete forever
+- Restore one, restore all, or the cream **×** to delete forever (hover goes faded rose)
 - Empty bin with an in-app confirm (Cancel or Empty bin)
 
 </td>
@@ -76,7 +76,7 @@
 - Due chips: **Overdue**, **Today**, **Tomorrow**
 - Tag chips: **Work**, **Home**, **Personal**
 - Repeat **Last done** and remind caption on one line (`In 15m • Last done 31 Aug`)
-- Gray ⋮, then the **pencil** to open the editor; **X** bins
+- Gray ⋮, then the **pencil** to open the editor; cream **×** bins
 
 </td>
 <td valign="top">
@@ -102,8 +102,8 @@
 | 3 | Sort by date added, due, priority, or Custom order. **Tag** filters Work / Home / Personal |
 | 4 | Drag the 6 dots, or Tab → **Space** → arrows → **Space**. On a phone, hold the dots until the olive ring, then slide. Check the circle to complete. **Move all to Bin** clears Completed |
 | 5 | Double-click to rename, or the **pencil** for the full editor. Close or click the backdrop to save |
-| 6 | **X** sends one task to the Bin |
-| 7 | Open **Bin** to restore, restore all, delete forever, or empty |
+| 6 | Cream **×** sends one task to the Bin |
+| 7 | Open **Bin** to restore, restore all, delete forever (cream **×**, rose hover), or empty |
 | 8 | Click the sun / moon switch for Light / Dark |
 
 Each visitor’s list is stored only in their own browser.
@@ -217,7 +217,10 @@ Screenshots of the real HTML and CSS at each **main** release live in a closed s
 <strong>v1.16.0</strong><br>Row editor / pencil<br>
 <img src="assets/screenshots/v1.16.0.png" width="200" alt="v1.16.0 Row editor / pencil">
 </td>
-<td></td>
+<td align="center" valign="top">
+<strong>v1.17.0</strong><br>Cream ×<br>
+<img src="assets/screenshots/v1.17.0.png" width="200" alt="v1.17.0 Cream ×">
+</td>
 </tr>
 </table>
 
@@ -260,6 +263,7 @@ The app was built in phases — structure and styling first, then behavior, then
 | **Phase 20** | Touch drag — hold the 6-dot grip, olive ring, slide | Done |
 | **v1.15.1** | iOS freeze fix — follow the finger on document after a touch hold | Done |
 | **v1.16.0** | Row editor control — gray kebab, pencil button, dark-theme charcoal | Done |
+| **v1.17.0** | Cream × on the row and in Bin; Bin hover faded rose | Done |
 
 </details>
 

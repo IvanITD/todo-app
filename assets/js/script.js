@@ -155,8 +155,9 @@ function createTodoItem(text) {
 
     const deleteButton = document.createElement("button");
     deleteButton.type = "button";
+    deleteButton.className = "todo-bin";
     deleteButton.dataset.action = "bin";
-    deleteButton.textContent = "X";
+    deleteButton.setAttribute("aria-label", "Move to bin");
 
     li.append(dragHandle, checkbox, textWrap, meta, detailsDots, detailsButton, deleteButton);
     return li;
@@ -1018,7 +1019,7 @@ function createBinnedItem(text, isDone, details) {
     deleteButton.type = "button";
     deleteButton.className = "bin-delete";
     deleteButton.dataset.action = "delete-forever";
-    deleteButton.textContent = "X";
+    deleteButton.setAttribute("aria-label", "Delete forever");
 
     li.append(span, restoreButton, deleteButton);
     return li;
